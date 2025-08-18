@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creds Log</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #log { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h2>Credentials Log</h2>
+    <div id="log"></div>
+    <script>
+        function updateLog() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const creds = urlParams.get('creds');
+            if (creds) {
+                document.getElementById('log').textContent += decodeURIComponent(creds) + '\n';
+            }
+        }
+        updateLog();
+        setInterval(updateLog, 1000); // Check every second
+    </script>
+</body>
+</html>
