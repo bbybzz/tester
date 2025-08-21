@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/allstorage", "destination": "/?allstorage" },
+    { "source": "/collect", "destination": "/collector.html" }
+  ]
+}
