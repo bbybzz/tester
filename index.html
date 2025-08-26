@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Market</title>
+  <style>
+    /* Reset & Base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Animated background gradient */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, #ff00cc, #3333ff, #00ffcc, #ff9900, #ff00cc);
+      animation: spin 20s linear infinite;
+      z-index: -1;
+      opacity: 0.15;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      font-size: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: bold;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
+
+    .market {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    .item {
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .item:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 0 25px #0ff;
+    }
+
+    .item img {
+      max-width: 120px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 8px #0ff);
+    }
+
+    .item h3 {
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-size: 1.3rem;
+    }
+
+    .item p {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <header>Neon Market</header>
+
+  <section class="market">
+    <div class="item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa Logo">
+      <h3>Neon Chip</h3>
+      <p>Glowing payment relic of the old world.</p>
+    </div>
+
+    <div class="item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Mastercard_logo.png" alt="MC Logo">
+      <h3>Quantum Key</h3>
+      <p>Unlocks encrypted vaults across the grid.</p>
+    </div>
+
+    <div class="item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg" alt="Amex Logo">
+      <h3>Ghost Card</h3>
+      <p>Identity mask used by shadow runners.</p>
+    </div>
+
+    <div class="item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Discover_Card_logo.svg" alt="Discover Logo">
+      <h3>Data Crystal</h3>
+      <p>Stores fragments of forbidden archives.</p>
+    </div>
+
+    <div class="item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Saks_Fifth_Avenue_logo.svg" alt="Saks Logo">
+      <h3>Synth Couture</h3>
+      <p>Luxury fashion laced with smart fibers.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Neon Market — Fictional Demo for Creative Projects
+  </footer>
+</body>
+</html>
