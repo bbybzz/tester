@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RakRunnin Card Shop - Premium Deals 💰</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a0a, #1c2526);
+      color: #e0e0e0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    #captcha-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    #captcha-screen h2 {
+      color: #00ff99;
+      text-shadow: 0 0 10px #00ff99;
+      font-size: 2.5em;
+    }
+    #captcha-screen p {
+      font-size: 1.2em;
+      color: #a0a0a0;
+    }
+    #captcha-screen input {
+      padding: 12px;
+      margin: 15px 0;
+      border: 2px solid #00ff99;
+      border-radius: 8px;
+      background: #1a2e2e;
+      color: #e0e0e0;
+      font-size: 1.1em;
+      transition: border-color 0.3s;
+    }
+    #captcha-screen input:focus {
+      border-color: #ff4444;
+      outline: none;
+    }
+    #captcha-screen button {
+      background: linear-gradient(45deg, #00ff99, #ff4444);
+      color: #fff;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: transform 0.3s, background 0.3s;
+    }
+    #captcha-screen button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4444, #00ff99);
+    }
+    .header {
+      background: linear-gradient(90deg, #1a2e2e, #0d1a1a);
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 255, 153, 0.4);
+      animation: slideIn 1s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 3.5em;
+      color: #00ff99;
+      text-shadow: 0 0 15px #00ff99;
+    }
+    .header p {
+      font-size: 1.3em;
+      margin: 10px 0;
+      color: #a0a0a0;
+      text-shadow: 0 0 5px #a0a0a0;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #0d1a1a, #1a2e2e);
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    }
+    .navbar button {
+      background: linear-gradient(45deg, #00ff99, #ff4444);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .navbar button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(45deg, #ff4444, #00ff99);
+    }
+    .search-bar {
+      margin: 15px auto;
+      max-width: 500px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #00ff99;
+      border-radius: 6px;
+      background: #1a2e2e;
+      color: #e0e0e0;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+    .search-bar input:focus {
+      border-color: #ff4444;
+      outline: none;
+    }
+    .section {
+      margin: 30px;
+      animation: fadeInUp 1s ease-out;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .section h2 {
+      color: #00ff99;
+      font-size: 2.5em;
+      text-align: center;
+      text-shadow: 0 0 15px #00ff99;
+      margin-bottom: 20px;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 20px;
+      max-height: 650px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #00ff99 #1a2e2e;
+    }
+    .card-item {
+      background: linear-gradient(135deg, #1a2e2e, #0d1a1a);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 6px 20px rgba(0, 255, 153, 0.3);
+    }
+    .card-item:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(0, 255, 153, 0.5);
+    }
+    .card-item img {
+      width: 200px;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      transition: transform 0.3s;
+    }
+    .card-item img:hover {
+      transform: scale(1.1);
+    }
+    .card-item h3 {
+      margin: 10px 0;
+      color: #00ff99;
+      font-size: 1.3em;
+      text-shadow: 0 0 8px #00ff99;
+    }
+    .card-item p {
+      margin: 8px 0;
+      font-size: 1em;
+      color: #a0a0a0;
+    }
+    .buy-btn {
+      background: linear-gradient(45deg, #00ff99, #ff4444);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .buy-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4444, #00ff99);
+    }
+    .fullz-item, .malware-item, .methods-item {
+      background: linear-gradient(135deg, #1a2e2e, #0d1a1a);
+      padding: 20px;
+      border-radius: 10px;
+      margin: 15px auto;
+      max-width: 700px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 6px 20px rgba(0, 255, 153, 0.3);
+    }
+    .fullz-item:hover, .malware-item:hover, .methods-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 255, 153, 0.5);
+    }
+    .job-section {
+      background: linear-gradient(135deg, #0d1a1a, #1a2e2e);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 30px auto;
+      max-width: 700px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 255, 153, 0.3);
+    }
+    .job-section a {
+      color: #00ff99;
+      text-decoration: none;
+      font-size: 1.3em;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .job-section a:hover {
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff4444;
+    }
+    .profit-info {
+      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+      color: #fff;
+      font-size: 0.9em;
+      box-shadow: 0 4px 10px rgba(0, 255, 153, 0.3);
+    }
+    .card-item:hover .profit-info, .fullz-item:hover .profit-info, .malware-item:hover .profit-info, .methods-item:hover .profit-info {
+      display: block;
+    }
+    .saks-highlight {
+      border: 3px solid #ff4444;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="captcha-screen">
+    <h2>Verify You're Human 🤖</h2>
+    <p id="captcha-question">What is 2 + 3?</p>
+    <input type="text" id="captcha-input">
+    <button onclick="verifyCaptcha()">Submit ✅</button>
+  </div>
+
+  <div class="header">
+    <h1>💰 RakRunnin Card Shop 💰</h1>
+    <p>Unlock Premium CCs, Fullz, Malware, Gift Cards & Free Methods - DM @RakRunnin! 🔥</p>
+  </div>
+
+  <div class="navbar">
+    <button onclick="filterItems('all')">All Items 🔄</button>
+    <button onclick="filterItems('Visa')">Visa 💳</button>
+    <button onclick="filterItems('MasterCard')">MasterCard 💳</button>
+    <button onclick="filterItems('Discover')">Discover 💳</button>
+    <button onclick="filterItems('Amex')">Amex 💳</button>
+    <button onclick="sortItems('price')">Sort by Price 📈</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search items... 🔍" oninput="searchItems(this.value)">
+  </div>
+
+  <div class="section">
+    <h2>Credit Cards 💳</h2>
+    <div class="card-container" id="cardContainer">
+      <!-- Cards generated here -->
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Gift Cards 🎁</h2>
+    <div class="card-container" id="giftContainer">
+      <!-- Gift cards generated here -->
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="saks-highlight">🔴 BIG CHASE SAKS CARDS 🔴</h2>
+    <div class="card-container" id="saksContainer">
+      <!-- Saks cards generated here -->
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Fullz 🔒</h2>
+    <div class="fullz-item">
+      <p>Name: John Doe | DOB: 03/15/1985 | SSN: 123-45-6789 | Address: 123 Main St, NY</p>
+      <p>Price: $20 💰</p>
+      <button class="buy-btn" onclick="buyItem('Fullz - John Doe')">Buy Now 📩</button>
+      <div class="profit-info">Potential: $500-$1,000 via bank drops or loan scams!</div>
+    </div>
+    <div class="fullz-item">
+      <p>Name: Jane Smith | DOB: 07/22/1990 | SSN: 987-65-4321 | Address: 456 Oak Ave, CA</p>
+      <p>Price: $25 💰</p>
+      <button class="buy-btn" onclick="buyItem('Fullz - Jane Smith')">Buy Now 📩</button>
+      <div class="profit-info">Potential: $800-$1,500 with synthetic ID fraud!</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Malware 🦠</h2>
+    <div class="malware-item">
+      <p>Stealth Keylogger - Silent keystroke capture</p>
+      <p>Price: $50 💰</p>
+      <button class="buy-btn" onclick="buyItem('Stealth Keylogger')">Buy Now 📩</button>
+      <div class="profit-info">Potential: $200-$1,000 per target from credentials!</div>
+    </div>
+    <div class="malware-item">
+      <p>Trojan X - Remote access & data theft</p>
+      <p>Price: $80 💰</p>
+      <button class="buy-btn" onclick="buyItem('Trojan X')">Buy Now 📩</button>
+      <div class="profit-info">Potential: $500-$2,000 per infection!</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Free Methods 📜</h2>
+    <div class="methods-item" id="method1">
+      <p>[Locked] Join https://t.me/+4CH83fMlIv5kMDYx to unlock Method 1!</p>
+      <p>Price: Free (Premium Upgrade: $10 💰)</p>
+      <button class="buy-btn" onclick="unlockMethod('method1')">Unlock Method 📩</button>
+      <div class="profit-info" style="display: none;">Potential: $100-$300 daily with basic phishing!</div>
+    </div>
+    <div class="methods-item" id="method2">
+      <p>[Locked] Join https://t.me/+4CH83fMlIv5kMDYx to unlock Method 2!</p>
+      <p>Price: Free (Premium Upgrade: $15 💰)</p>
+      <button class="buy-btn" onclick="unlockMethod('method2')">Unlock Method 📩</button>
+      <div class="profit-info" style="display: none;">Potential: $150-$400 daily with SMS spoofing!</div>
+    </div>
+  </div>
+
+  <div class="job-section">
+    <h2>Need Cash Fast? 💸</h2>
+    <p>DM @RakRunnin on Telegram for gigs! 🚀</p>
+    <a href="https://t.me/rakrunning">Contact @RakRunnin 📩</a>
+  </div>
+
+  <script>
+    const cardData = [
+      { type: 'Visa', bin: '414720', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg' },
+      { type: 'MasterCard', bin: '510505', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/MasterCard-logo.svg' }, // Verified older logo
+      { type: 'Discover', bin: '601111', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg' },
+      { type: 'Amex', bin: '378282', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg' }
+    ];
+
+    const giftData = [
+      { type: 'Saks Fifth Avenue', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0a/Saks_Fifth_Avenue_logo.svg' },
+      { type: 'Best Buy', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Best_Buy_Logo.svg' },
+      { type: 'Apple', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' }
+    ];
+
+    function generateCard() {
+      const card = cardData[Math.floor(Math.random() * cardData.length)];
+      const cardNumber = card.bin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
+      const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const expiryYear = String(Math.floor(Math.random() * 10) + 24);
+      const cvv = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+      const price = Math.floor(Math.random() * 50 + 10);
+      return { cardNumber: cardNumber.match(/.{1,4}/g).join('-'), expiry: `${expiryMonth}/${expiryYear}`, cvv, cardType: card.type, logo: card.logo, price };
+    }
+
+    function generateGift() {
+      const gift = giftData[Math.floor(Math.random() * giftData.length)];
+      const code = Array(16).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
+      const balance = Math.floor(Math.random() * (1000 - 50 + 1)) + 50; // Random 50-1000
+      const price = Math.floor(balance / (Math.random() * 20 + 10) + 5); // $10-$35
+      return { code: code.match(/.{4}/g).join('-'), type: gift.type, logo: gift.logo, balance, price };
+    }
+
+    function generateSaksCard() {
+      const cardNumber = '510505' + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join(''); // MasterCard BIN
+      const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const expiryYear = String(Math.floor(Math.random() * 10) + 24);
+      const cvv = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+      const balance = Math.floor(Math.random() * (1000 - 100 + 1)) + 100; // Random 100-1000
+      const price = Math.floor(Math.random() * 26 + 10); // $10-$35
+      return { cardNumber: cardNumber.match(/.{1,4}/g).join('-'), expiry: `${expiryMonth}/${expiryYear}`, cvv, type: 'Chase Saks', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/MasterCard-logo.svg', balance, price };
+    }
+
+    function displayItems(filter = 'all', containerId = 'cardContainer') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      let items = [];
+      if (containerId === 'cardContainer') items = Array(20).fill().map(generateCard);
+      else if (containerId === 'giftContainer') items = Array(10).fill().map(generateGift);
+      else if (containerId === 'saksContainer') items = Array(10).fill().map(generateSaksCard);
+      let filteredItems = items;
+      if (filter !== 'all') {
+        filteredItems = items.filter(item => item.cardType === filter || item.type.includes(filter));
+      }
+      filteredItems.forEach(item => addItem(item, container));
+    }
+
+    function addItem(item, container) {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'card-item';
+      let content = '';
+      if ('cardNumber' in item && !('balance' in item)) {
+        content = `
+          <img src="${item.logo}" alt="${item.cardType}">
+          <h3>${item.cardType} 💳 - $${item.price * 50} Balance</h3>
+          <p>Price: $${item.price} 💰</p>
+          <p>Card Number: ${item.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX</p>
+          <p>Expiry: ${item.expiry} | CVV: ***</p>
+          <button class="buy-btn" onclick="buyItem('${item.cardType} - ${item.cardNumber}')">Buy Now 📩</button>
+          <div class="profit-info">Potential: $200-$1,000 via cash-out or online spends!</div>
+        `;
+      } else if ('balance' in item && item.type !== 'Chase Saks') {
+        content = `
+          <img src="${item.logo}" alt="${item.type}">
+          <h3>${item.type} Gift Card 🎁 - $${item.balance} Value</h3>
+          <p>Price: $${item.price} 💰</p>
+          <p>Code: ${item.code.slice(0, 5)}XXXX-XXXX</p>
+          <button class="buy-btn" onclick="buyItem('${item.type} Gift - ${item.code}')">Buy Now 📩</button>
+          <div class="profit-info">Potential: $100-$500 resell or use for ${item.type} goods!</div>
+        `;
+      } else if ('balance' in item && item.type === 'Chase Saks') {
+        content = `
+          <img src="${item.logo}" alt="${item.type}">
+          <h3>${item.type} 💳 - $${item.balance} Balance</h3>
+          <p>Price: $${item.price} 💰</p>
+          <p>Card Number: ${item.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX</p>
+          <p>Expiry: ${item.expiry} | CVV: ***</p>
+          <button class="buy-btn" onclick="buyItem('${item.type} - ${item.cardNumber}')">Buy Now 📩</button>
+          <div class="profit-info">Potential: $150-$600 on luxury purchases at Saks!</div>
+        `;
+      }
+      itemDiv.innerHTML = content;
+      if (item.type === 'Chase Saks') itemDiv.classList.add('saks-highlight');
+      container.appendChild(itemDiv);
+    }
+
+    function searchItems(query) {
+      const containers = ['cardContainer', 'giftContainer', 'saksContainer'];
+      containers.forEach(id => {
+        const items = document.getElementById(id).getElementsByClassName('card-item');
+        Array.from(items).forEach(item => {
+          const title = item.querySelector('h3').textContent.toLowerCase();
+          item.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
+        });
+      });
+    }
+
+    function filterItems(type) {
+      displayItems(type, 'cardContainer');
+      displayItems(type, 'giftContainer');
+      displayItems(type, 'saksContainer');
+    }
+
+    function sortItems() {
+      const containers = ['cardContainer', 'giftContainer', 'saksContainer'];
+      containers.forEach(id => {
+        const container = document.getElementById(id);
+        const items = Array.from(container.children);
+        items.sort((a, b) => {
+          const priceA = parseInt(a.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+          const priceB = parseInt(b.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+          return priceA - priceB;
+        });
+        container.innerHTML = '';
+        items.forEach(item => container.appendChild(item));
+      });
+    }
+
+    function buyItem(item) {
+      window.location.href = 'https://t.me/rakrunning';
+    }
+
+    function verifyCaptcha() {
+      const questions = [
+        { q: 'What is 2 + 3?', a: '5' },
+        { q: 'What is 4 + 2?', a: '6' },
+        { q: 'What is 1 + 4?', a: '5' },
+        { q: 'What is 3 + 3?', a: '6' }
+      ];
+      const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+      document.getElementById('captcha-question').textContent = randomQuestion.q;
+      const input = document.getElementById('captcha-input').value;
+      if (input === randomQuestion.a) {
+        document.getElementById('captcha-screen').style.display = 'none';
+      } else {
+        alert('Wrong! Try again. 😡');
+        document.getElementById('captcha-input').value = '';
+      }
+    }
+
+    function unlockMethod(methodId) {
+      const methodDiv = document.getElementById(methodId);
+      const joinLink = 'https://t.me/+4CH83fMlIv5kMDYx';
+      if (!localStorage.getItem(`unlocked_${methodId}`)) {
+        window.open(joinLink, '_blank');
+        setTimeout(() => {
+          if (confirm('Did you join the Telegram group? Click OK to unlock!')) {
+            localStorage.setItem(`unlocked_${methodId}`, 'true');
+            if (methodId === 'method1') {
+              methodDiv.innerHTML = `
+                <p>Method 1: Basic Carding - Use free CCs from dark web forums, test on low-value sites (e.g., $10 Amazon). Withdraw via crypto or gift cards.</p>
+                <p>Price: Free (Premium Upgrade: $10 💰)</p>
+                <button class="buy-btn" onclick="buyItem('Premium Carding Kit')">Upgrade 📩</button>
+                <div class="profit-info">Potential: $100-$300 daily with 5-10 successful tests!</div>
+              `;
+            } else if (methodId === 'method2') {
+              methodDiv.innerHTML = `
+                <p>Method 2: Email Spoofing - Use free tools like FakeEmailGenerator, target with phishing emails, harvest logins.</p>
+                <p>Price: Free (Premium Upgrade: $15 💰)</p>
+                <button class="buy-btn" onclick="buyItem('Premium Spoof Tool')">Upgrade 📩</button>
+                <div class="profit-info">Potential: $150-$400 daily with 20-30 targets!</div>
+              `;
+            }
+          }
+        }, 5000); // 5-second delay
+      }
+    }
+
+    window.onload = () => {
+      verifyCaptcha(); // Initialize with random question
+      displayItems('all', 'cardContainer');
+      displayItems('all', 'giftContainer');
+      displayItems('all', 'saksContainer');
+    };
+  </script>
+</body>
+</html>
