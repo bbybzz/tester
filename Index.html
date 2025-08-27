@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RakRunnin Marketplace - Cards & Accounts</title>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #e0e0e0;
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    #captcha-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #captcha-screen h2 {
+      color: #00b300;
+      font-size: 2em;
+    }
+    #captcha-screen input {
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 3px;
+      background: #1c1c1c;
+      color: #e0e0e0;
+      font-size: 1em;
+    }
+    #captcha-screen button {
+      background: #00b300;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    #captcha-screen button:hover {
+      background: #009900;
+    }
+    .header {
+      background: #1c1c1c;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #00b300;
+    }
+    .header p {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #b0b0b0;
+    }
+    .navbar {
+      background: #1c1c1c;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+    .navbar button {
+      background: #00b300;
+      color: #000;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .navbar button:hover {
+      background: #009900;
+      transform: scale(1.03);
+    }
+    .search-bar {
+      margin: 15px auto;
+      max-width: 500px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 3px;
+      background: #1c1c1c;
+      color: #e0e0e0;
+      font-size: 1em;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    .section {
+      margin: 20px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .section h2 {
+      color: #00b300;
+      font-size: 1.8em;
+      text-align: center;
+    }
+    .item-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 15px;
+      padding: 15px;
+      max-height: 500px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #00b300 #1c1c1c;
+    }
+    .item {
+      background: #1c1c1c;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    }
+    .item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 179, 0, 0.4);
+    }
+    .item img {
+      width: 150px;
+      height: auto;
+      border-radius: 3px;
+      margin-bottom: 10px;
+      transition: transform 0.3s;
+    }
+    .item img:hover {
+      transform: scale(1.05);
+    }
+    .item h3 {
+      margin: 10px 0;
+      color: #00b300;
+      font-size: 1.1em;
+    }
+    .item p {
+      margin: 5px 0;
+      font-size: 0.85em;
+      color: #b0b0b0;
+    }
+    .buy-btn {
+      background: #00b300;
+      color: #000;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.85em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .buy-btn:hover {
+      background: #009900;
+      transform: scale(1.03);
+    }
+    .job-section {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px auto;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    }
+    .job-section a {
+      color: #00b300;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+    .job-section a:hover {
+      color: #009900;
+    }
+  </style>
+</head>
+<body>
+  <div id="captcha-screen">
+    <h2>Verify Access</h2>
+    <p>What is 6 + 5?</p>
+    <input type="text" id="captcha-input">
+    <button onclick="verifyCaptcha()">Submit</button>
+  </div>
+
+  <div class="header">
+    <h1>RakRunnin Marketplace</h1>
+    <p>Fresh Cards & Store Accounts - Contact @RakRunnin on Telegram to Purchase</p>
+  </div>
+
+  <div class="navbar">
+    <button onclick="filterItems('all', 'cardContainer')">All Cards</button>
+    <button onclick="filterItems('Visa', 'cardContainer')">Visa</button>
+    <button onclick="filterItems('MasterCard', 'cardContainer')">MasterCard</button>
+    <button onclick="filterItems('Discover', 'cardContainer')">Discover</button>
+    <button onclick="filterItems('Amex', 'cardContainer')">Amex</button>
+    <button onclick="sortItems('cardContainer')">Sort by Price</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search items..." oninput="searchItems(this.value)">
+  </div>
+
+  <div class="section">
+    <h2>Credit Cards</h2>
+    <div class="item-container" id="cardContainer">
+      <!-- Cards generated here -->
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Store Accounts & Gift Cards</h2>
+    <div class="item-container" id="accountContainer">
+      <!-- Accounts generated here -->
+    </div>
+  </div>
+
+  <div class="job-section">
+    <h2>Looking to Stack Cash?</h2>
+    <p>Join @RakRunnin on Telegram for exclusive methods and opportunities!</p>
+    <a href="https://t.me/rakrunning">Contact @RakRunnin</a>
+  </div>
+
+  <script>
+    const cardData = [
+      { type: 'Visa', bin: '414720', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs. High limits, clean bins.' },
+      { type: 'MasterCard', bin: '555555', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Use for subscriptions or big purchases. Easy to cash out.' },
+      { type: 'Discover', bin: '601111', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores. Low suspicion, high success.' },
+      { type: 'Amex', bin: '378282', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or high-value cashouts. Elite bins.' }
+    ];
+
+    const accountData = [
+      { type: 'Saks Account', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Saks_Fifth_Avenue_logo.svg', use: 'Buy luxury goods at Saks. Instant access, up to $2,000 balance.' },
+      { type: 'Nordstrom Gift Card', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Nordstrom_Logo.svg', use: 'Shop fashion at Nordstrom. Redeem online or in-store.' },
+      { type: 'Walmart Gift Card', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg', use: 'Purchase electronics or groceries at Walmart. Easy to use.' }
+    ];
+
+    function generateItem(isAccount = false) {
+      const data = isAccount ? accountData[Math.floor(Math.random() * accountData.length)] : cardData[Math.floor(Math.random() * cardData.length)];
+      const cardNumber = isAccount ? `ACCT${Math.floor(Math.random() * 1000000)}` : data.bin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
+      const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const expiryYear = String(Math.floor(Math.random() * 10) + 24);
+      const cvv = isAccount ? '' : String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+      const price = Math.floor(Math.random() * 50 + 10);
+      return {
+        cardNumber: cardNumber.match(/.{1,4}/g)?.join('-') || cardNumber,
+        expiry: isAccount ? '' : `${expiryMonth}/${expiryYear}`,
+        cvv,
+        cardType: data.type,
+        logo: data.logo,
+        price,
+        use: data.use
+      };
+    }
+
+    function displayItems(filter = 'all', containerId = 'cardContainer') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const items = Array(30).fill().map(() => generateItem(containerId === 'accountContainer')); // 30 items for variety
+      let filteredItems = items;
+      if (filter !== 'all') {
+        filteredItems = items.filter(item => item.cardType === filter);
+      }
+      filteredItems.forEach(item => addItem(item, container));
+    }
+
+    function addItem(item, container) {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item';
+      itemDiv.innerHTML = `
+        <img src="${item.logo}" alt="${item.cardType}">
+        <h3>${item.cardType} - $${item.price * 50}</h3>
+        <p>Price: $${item.price}</p>
+        <p>${container.id === 'cardContainer' ? `Card Number: ${item.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX` : `Account ID: ${item.cardNumber}`}</p>
+        ${item.expiry ? `<p>Expiry: ${item.expiry} | CVV: ***</p>` : ''}
+        <p>${item.use}</p>
+        <button class="buy-btn" onclick="buyItem('${item.cardType} - ${item.cardNumber}')">Contact to Purchase</button>
+      `;
+      container.appendChild(itemDiv);
+    }
+
+    function searchItems(query) {
+      const containers = ['cardContainer', 'accountContainer'];
+      containers.forEach(containerId => {
+        const container = document.getElementById(containerId);
+        const items = container.getElementsByClassName('item');
+        Array.from(items).forEach(item => {
+          const title = item.querySelector('h3').textContent.toLowerCase();
+          item.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
+        });
+      });
+    }
+
+    function filterItems(type, containerId) {
+      displayItems(type, containerId);
+    }
+
+    function sortItems(containerId) {
+      const container = document.getElementById(containerId);
+      const items = Array.from(container.children);
+      items.sort((a, b) => {
+        const priceA = parseInt(a.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+        const priceB = parseInt(b.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+        return priceA - priceB;
+      });
+      container.innerHTML = '';
+      items.forEach(item => container.appendChild(item));
+    }
+
+    function buyItem(item) {
+      const itemData = generateItem();
+      fetch('YOUR_WEBHOOK_URL', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item, data: itemData, timestamp: new Date().toISOString() })
+      });
+      alert('Contact @RakRunnin on Telegram (https://t.me/rakrunning) to complete purchase!');
+      const firstItem = document.querySelector('.item');
+      if (firstItem) {
+        firstItem.querySelector('p:nth-child(4)').textContent = `${itemData.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX`;
+        if (itemData.expiry) firstItem.querySelector('p:nth-child(5)').textContent = `Expiry: ${itemData.expiry} | CVV: ***`;
+      }
+    }
+
+    function verifyCaptcha() {
+      const input = document.getElementById('captcha-input').value;
+      if (input === '11') {
+        document.getElementById('captcha-screen').style.display = 'none';
+      } else {
+        alert('Incorrect. Try again.');
+      }
+    }
+
+    window.onload = () => {
+      displayItems('all', 'cardContainer');
+      displayItems('all', 'accountContainer');
+    };
+  </script>
+</body>
+</html>
