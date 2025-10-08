@@ -6,7 +6,7 @@
   <title>RakRunnin Card Shop - Elite CCs, Fullz & Malware</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Reset and Base Styles */
+    /* Global Reset */
     * {
       margin: 0;
       padding: 0;
@@ -669,13 +669,6 @@
       transform: scale(1.1);
     }
 
-    .cart-total {
-      margin: 15px 0;
-      font-size: 1.3em;
-      color: #ffd700;
-      text-shadow: 0 0 10px #ffd700;
-    }
-
     /* Job Section */
     .job-section {
       background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
@@ -749,76 +742,6 @@
       filter: hue-rotate(30deg);
     }
 
-    /* Invoice Page Styles */
-    .invoice-section {
-      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
-      padding: 30px;
-      border-radius: 12px;
-      margin: 30px auto;
-      max-width: 700px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
-      animation: slideIn 0.5s ease-out;
-      display: none;
-    }
-
-    .invoice-section h2 {
-      color: #ff0000;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2em;
-      text-shadow: 0 0 12px #ff0000;
-      margin-bottom: 20px;
-    }
-
-    .invoice-section p {
-      font-size: 1.1em;
-      color: #ffcccc;
-      margin: 10px 0;
-    }
-
-    .invoice-section .btc-address {
-      background: #2a2a2a;
-      padding: 12px;
-      border: 2px solid #ff0000;
-      border-radius: 8px;
-      font-size: 1em;
-      color: #ffd700;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .invoice-section .btc-address:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #ff0000;
-    }
-
-    .invoice-section .timer {
-      font-size: 1.5em;
-      color: #ffd700;
-      text-shadow: 0 0 10px #ffd700;
-      margin: 15px 0;
-    }
-
-    .invoice-section button {
-      background: linear-gradient(45deg, #ff0000, #cc0000);
-      color: #fff;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1em;
-      font-family: 'Orbitron', sans-serif;
-      margin: 10px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      text-shadow: 0 0 5px #000;
-    }
-
-    .invoice-section button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 15px #ff0000;
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .sidebar {
@@ -873,20 +796,6 @@
 
       .item h3 {
         font-size: 1.5em;
-      }
-
-      .captcha-screen h2 {
-        font-size: 2em;
-      }
-
-      .captcha-screen input {
-        width: 160px;
-        font-size: 1em;
-      }
-
-      .captcha-screen button {
-        padding: 10px 20px;
-        font-size: 1em;
       }
     }
 
@@ -989,16 +898,7 @@
       <div class="cart-section" id="cart-section">
         <h2>Your Cart</h2>
         <div id="cart-items"></div>
-        <p class="cart-total" id="cart-total">Total: $0</p>
-        <button class="buy-btn" onclick="showInvoice()">Checkout</button>
-      </div>
-      <div class="invoice-section" id="invoice-section">
-        <h2>Payment Invoice</h2>
-        <p>Send BTC to the address below within the time limit:</p>
-        <div class="btc-address" id="btc-address" onclick="copyBTCAddress()">1EasJirLLMfQn2idZchQbbp3KsvHPxS8cr</div>
-        <p class="timer" id="invoice-timer">Time Remaining: 10:00</p>
-        <button onclick="confirmPayment()">Confirm Payment</button>
-        <button onclick="cancelInvoice()">Cancel</button>
+        <button class="buy-btn" onclick="checkout()">Checkout</button>
       </div>
       <div class="header">
         <h1>RakRunnin Card Shop</h1>
@@ -1014,7 +914,7 @@
         <button onclick="sortItemsByRating('cardContainer')">Sort by Rating</button>
       </div>
       <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search by BIN, type, or use..." oninput="searchItems(this.value)">
+        <input type="text" placeholder="Search drops..." oninput="searchItems(this.value)">
       </div>
       <div class="section" id="cards-section">
         <h2>Credit Cards</h2>
@@ -1042,7 +942,15 @@
   </div>
 
   <script>
-    // Data Arrays
+    // Real BINs for randomization
+    const realBins = {
+      Visa: ['4532', '4716', '4929', '4485', '4556'],
+      MasterCard: ['5321', '5432', '5555', '5100', '5404'],
+      Discover: ['6011', '6440', '6500', '6221', '6288'],
+      Amex: ['3742', '3783', '3411', '3732', '3790'],
+      Chase: ['4266', '4147', '4388', '4659', '4470']
+    };
+
     const usernames = [
       'cggtrey4', 'upoffccs12', 'realbreaswinnrrr', 'trappin4dayz', 'ccslime6',
       'cashoutkidd9', 'foenem_drip', 'bandz2quick', 'swipegodx', 'hustle4realz',
@@ -1096,11 +1004,11 @@
     ];
 
     const cardData = [
-      { type: 'Visa', bin: '414720', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs. Clean bins, high limits.', video: 'https://example.com/visa-demo.mp4', reviews: []},
-      { type: 'MasterCard', bin: '555555', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Perfect for subscriptions or big purchases. Easy cashout.', video: 'https://example.com/mastercard-demo.mp4', reviews: []},
-      { type: 'Discover', bin: '601111', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores. Low suspicion, high success.', video: 'https://example.com/discover-demo.mp4', reviews: []},
-      { type: 'Amex', bin: '378282', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or high-value cashouts. Elite bins.', video: 'https://example.com/amex-demo.mp4', reviews: []},
-      { type: 'Chase', bin: '426684', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Chase_Bank_logo.svg', use: 'Premium bank card for cashouts. High success rate.', video: 'https://example.com/chase-demo.mp4', soldOut: true, reviews: []}
+      { type: 'Visa', bin: realBins.Visa[0], logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs. Clean bins, high limits.', video: 'https://example.com/visa-demo.mp4', reviews: []},
+      { type: 'MasterCard', bin: realBins.MasterCard[0], logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Perfect for subscriptions or big purchases. Easy cashout.', video: 'https://example.com/mastercard-demo.mp4', reviews: []},
+      { type: 'Discover', bin: realBins.Discover[0], logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores. Low suspicion, high success.', video: 'https://example.com/discover-demo.mp4', reviews: []},
+      { type: 'Amex', bin: realBins.Amex[0], logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or high-value cashouts. Elite bins.', video: 'https://example.com/amex-demo.mp4', reviews: []},
+      { type: 'Chase', bin: realBins.Chase[0], logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Chase_Bank_logo.svg', use: 'Premium bank card for cashouts. High success rate.', video: 'https://example.com/chase-demo.mp4', soldOut: true, reviews: []}
     ];
 
     const accountData = [
@@ -1122,7 +1030,6 @@
       { type: 'Fullz - Mike Brown', bin: 'FULL3', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Black_skull.svg', use: 'Perfect for high-value applications. Verified data.', video: 'https://example.com/fullz3-demo.mp4', soldOut: true, reviews: []}
     ];
 
-    // Utility Functions
     function getUniqueRandomComments(count, usedComments) {
       const availableComments = commentPool.filter(comment => !usedComments.includes(comment));
       if (availableComments.length < count) {
@@ -1161,7 +1068,6 @@
 
     populateReviews();
 
-    // Navigation and UI Functions
     function toggleMenu() {
       const sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('active');
@@ -1170,7 +1076,6 @@
     function showAccountSection() {
       document.getElementById('account-section').style.display = 'block';
       document.getElementById('cart-section').style.display = 'none';
-      document.getElementById('invoice-section').style.display = 'none';
       document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
       document.getElementById('loading-screen').style.display = 'none';
     }
@@ -1178,32 +1083,11 @@
     function showCart() {
       document.getElementById('cart-section').style.display = 'block';
       document.getElementById('account-section').style.display = 'none';
-      document.getElementById('invoice-section').style.display = 'none';
       document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
       displayCart();
       document.getElementById('loading-screen').style.display = 'none';
     }
 
-    function showInvoice() {
-      const username = localStorage.getItem('currentUser');
-      if (!username) {
-        alert('Log in to checkout, fam.');
-        showAccountSection();
-        return;
-      }
-      const users = JSON.parse(localStorage.getItem('users') || '{}');
-      const cart = users[username]?.cart || [];
-      if (cart.length === 0) {
-        alert('Cart empty, fam. Add some drops!');
-        return;
-      }
-      document.getElementById('cart-section').style.display = 'none';
-      document.getElementById('invoice-section').style.display = 'block';
-      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
-      startInvoiceTimer();
-    }
-
-    // Account Management
     function createAccount() {
       const username = document.getElementById('username-input').value.trim();
       const password = document.getElementById('password-input').value.trim();
@@ -1248,7 +1132,6 @@
       showAccountSection();
     }
 
-    // Cart Management
     function addToCart(item) {
       const username = localStorage.getItem('currentUser');
       if (!username) {
@@ -1267,23 +1150,18 @@
     function displayCart() {
       const username = localStorage.getItem('currentUser');
       const cartItems = document.getElementById('cart-items');
-      const cartTotal = document.getElementById('cart-total');
       cartItems.innerHTML = '';
       if (!username) {
         cartItems.innerHTML = '<p>Log in to view your cart, fam.</p>';
-        cartTotal.textContent = 'Total: $0';
         return;
       }
       const users = JSON.parse(localStorage.getItem('users') || '{}');
       const cart = users[username]?.cart || [];
       if (cart.length === 0) {
         cartItems.innerHTML = '<p>Cart empty, fam. Stack some drops!</p>';
-        cartTotal.textContent = 'Total: $0';
         return;
       }
-      let total = 0;
       cart.forEach((item, index) => {
-        total += item.price;
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
@@ -1292,7 +1170,6 @@
         `;
         cartItems.appendChild(cartItem);
       });
-      cartTotal.textContent = `Total: $${total}`;
     }
 
     function removeFromCart(index) {
@@ -1303,56 +1180,41 @@
       displayCart();
     }
 
-    // Invoice Management
-    let timerInterval;
-    function startInvoiceTimer() {
-      let timeLeft = 10 * 60; // 10 minutes in seconds
-      const timerDisplay = document.getElementById('invoice-timer');
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-        timeLeft--;
-        if (timeLeft < 0) {
-          clearInterval(timerInterval);
-          alert('Payment window expired, fam. Try again.');
-          cancelInvoice();
-        }
-      }, 1000);
-    }
-
-    function copyBTCAddress() {
-      const btcAddress = '1EasJirLLMfQn2idZchQbbp3KsvHPxS8cr';
-      navigator.clipboard.writeText(btcAddress).then(() => {
-        alert('BTC address copied to clipboard!');
-      }).catch(() => {
-        alert('Failed to copy BTC address, fam. Copy it manually.');
-      });
-    }
-
-    function confirmPayment() {
+    function checkout() {
       const username = localStorage.getItem('currentUser');
+      if (!username) {
+        alert('Log in to checkout, fam.');
+        showAccountSection();
+        return;
+      }
       const users = JSON.parse(localStorage.getItem('users') || '{}');
       users[username].purchased = true;
       users[username].cart = [];
       localStorage.setItem('users', JSON.stringify(users));
-      clearInterval(timerInterval);
-      alert('Payment confirmed! Check Telegram for details, fam.');
       window.location.href = 'https://t.me/rakrunnin';
     }
 
-    function cancelInvoice() {
-      clearInterval(timerInterval);
-      document.getElementById('invoice-section').style.display = 'none';
-      showCart();
+    function addComment(item, reviewsId) {
+      const commentInput = document.getElementById(`comment-input-${reviewsId}`);
+      const comment = commentInput.value.trim();
+      if (!comment) return;
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const username = localStorage.getItem('currentUser');
+      if (!username || !users[username].purchased) {
+        alert('You haven’t purchased, so you can’t write a review, fam.');
+        return;
+      }
+      item.reviews.push({ rating: 0, comment, username });
+      commentInput.value = '';
+      displayItems('all', getContainerId(item.cardType), item.category);
     }
 
-    // Item Generation and Display
     function generateItem(category) {
       const data = category === 'cards' ? cardData : category === 'accounts' ? accountData : category === 'malware' ? malwareData : fullzData;
       const item = data[Math.floor(Math.random() * data.length)];
-      const cardNumber = item.bin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
+      const bins = realBins[item.type] || [item.bin];
+      const selectedBin = bins[Math.floor(Math.random() * bins.length)];
+      const cardNumber = selectedBin + Array(10).fill(0).map(() => Math.floor(Math.random() * 10)).join('');
       const expiryMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
       const expiryYear = String(Math.floor(Math.random() * 10) + 24);
       const cvv = category === 'cards' ? String(Math.floor(Math.random() * 1000)).padStart(3, '0') : '';
@@ -1386,7 +1248,7 @@
     function getContainerId(cardType) {
       if (cardData.some(c => c.type === cardType)) return 'cardContainer';
       if (accountData.some(c => c.type === cardType)) return 'accountContainer';
-      if (malwareData.some(c => c.type === cardType)) return 'malwareContainer';
+      if (malwareData.some(c => c.type === c.type)) return 'malwareContainer';
       return 'fullzContainer';
     }
 
@@ -1433,7 +1295,7 @@
           ${canComment ? `
             <input type="text" class="comment-input" id="comment-input-${reviewsId}" placeholder="Drop a comment...">
             <button class="comment-btn" onclick="addComment(${JSON.stringify(item)}, '${reviewsId}')">Post Comment</button>
-          ` : ''}
+          ` : '<p class="comment">You haven’t purchased, so you can’t write a review, fam.</p>'}
         </div>
         <button class="buy-btn" ${item.soldOut ? 'disabled' : ''} onclick="addToCart(${JSON.stringify(item)})">Add to Cart</button>
       `;
@@ -1456,22 +1318,32 @@
       reviewsContainer.style.display = reviewsContainer.style.display === 'block' ? 'none' : 'block';
     }
 
-    function addComment(item, reviewsId) {
-      const commentInput = document.getElementById(`comment-input-${reviewsId}`);
-      const comment = commentInput.value.trim();
-      if (!comment) return;
-      const users = JSON.parse(localStorage.getItem('users') || '{}');
-      const username = localStorage.getItem('currentUser');
-      if (!username || !users[username].purchased) {
-        alert('Gotta make a confirmed purchase to comment, fam.');
-        return;
-      }
-      item.reviews.push({ rating: 0, comment, username });
-      commentInput.value = '';
-      displayItems('all', getContainerId(item.cardType), item.category);
+    function updateSidebar() {
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      sidebarMenu.innerHTML = '';
+      const categories = [
+        { name: 'Credit Cards', id: 'cards', container: 'cardContainer' },
+        { name: 'Store Accounts', id: 'accounts', container: 'accountContainer' },
+        { name: 'Malware', id: 'malware', container: 'malwareContainer' },
+        { name: 'Fullz', id: 'fullz', container: 'fullzContainer' }
+      ];
+      categories.forEach(category => {
+        const types = (category.id === 'cards' ? cardData : category.id === 'accounts' ? accountData : category.id === 'malware' ? malwareData : fullzData)
+          .map(item => item.type);
+        types.forEach(type => {
+          const count = Array.from(document.getElementById(category.container).children)
+            .filter(item => item.querySelector('h3').textContent.includes(type) && !item.querySelector('.sold-out')).length;
+          const li = document.createElement('li');
+          li.textContent = `${type} (${count} available)`;
+          li.className = count === 0 ? 'sold-out' : '';
+          li.onclick = count > 0 ? () => filterItems(type, category.container, category.id) : null;
+          sidebarMenu.appendChild(li);
+        });
+      });
+      sidebarMenu.innerHTML += '<li onclick="showAccountSection()">Account</li>';
+      sidebarMenu.innerHTML += '<li onclick="showCart()">Cart</li>';
     }
 
-    // Search Functionality
     function searchItems(query) {
       const containers = ['cardContainer', 'accountContainer', 'malwareContainer', 'fullzContainer'];
       containers.forEach(containerId => {
@@ -1479,18 +1351,12 @@
         const items = container.getElementsByClassName('item');
         Array.from(items).forEach(item => {
           const title = item.querySelector('h3').textContent.toLowerCase();
-          const cardNumber = item.querySelector('p:nth-child(3)').textContent.toLowerCase();
-          const use = item.querySelector('p:nth-child(5)').textContent.toLowerCase();
-          const matches = title.includes(query.toLowerCase()) || 
-                         cardNumber.includes(query.toLowerCase()) || 
-                         use.includes(query.toLowerCase());
-          item.style.display = matches ? 'block' : 'none';
+          item.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
         });
       });
       updateSidebar();
     }
 
-    // Filtering and Sorting
     function filterItems(type, containerId, category) {
       displayItems(type, containerId, category);
     }
@@ -1521,40 +1387,11 @@
       updateSidebar();
     }
 
-    // Sidebar Update
-    function updateSidebar() {
-      const sidebarMenu = document.getElementById('sidebar-menu');
-      sidebarMenu.innerHTML = '';
-      const categories = [
-        { name: 'Credit Cards', id: 'cards', container: 'cardContainer' },
-        { name: 'Store Accounts', id: 'accounts', container: 'accountContainer' },
-        { name: 'Malware', id: 'malware', container: 'malwareContainer' },
-        { name: 'Fullz', id: 'fullz', container: 'fullzContainer' }
-      ];
-      categories.forEach(category => {
-        const types = (category.id === 'cards' ? cardData : category.id === 'accounts' ? accountData : category.id === 'malware' ? malwareData : fullzData)
-          .map(item => item.type);
-        types.forEach(type => {
-          const count = Array.from(document.getElementById(category.container).children)
-            .filter(item => item.querySelector('h3').textContent.includes(type) && !item.querySelector('.sold-out')).length;
-          const li = document.createElement('li');
-          li.textContent = `${type} (${count} available)`;
-          li.className = count === 0 ? 'sold-out' : '';
-          li.onclick = count > 0 ? () => filterItems(type, category.container, category.id) : null;
-          sidebarMenu.appendChild(li);
-        });
-      });
-      sidebarMenu.innerHTML += '<li onclick="showAccountSection()">Account</li>';
-      sidebarMenu.innerHTML += '<li onclick="showCart()">Cart</li>';
-    }
-
-    // Theme Toggle
     function toggleTheme() {
       document.body.classList.toggle('dark-theme');
       document.body.classList.toggle('neon-theme');
     }
 
-    // Page Loading
     function loadPage(sectionId) {
       document.getElementById('loading-screen').style.display = 'flex';
       setTimeout(() => {
@@ -1564,7 +1401,6 @@
         document.getElementById('fullz-section').style.display = sectionId === 'fullz' ? 'block' : 'none';
         document.getElementById('account-section').style.display = 'none';
         document.getElementById('cart-section').style.display = 'none';
-        document.getElementById('invoice-section').style.display = 'none';
         if (sectionId === 'cards') displayItems('all', 'cardContainer', 'cards');
         else if (sectionId === 'accounts') displayItems('all', 'accountContainer', 'accounts');
         else if (sectionId === 'malware') displayItems('all', 'malwareContainer', 'malware');
@@ -1573,7 +1409,6 @@
       }, 1500);
     }
 
-    // Captcha Verification
     function verifyCaptcha() {
       const input = document.getElementById('captcha-input').value;
       if (input === '13') {
@@ -1590,16 +1425,11 @@
       }
     }
 
-    // Initialize
     window.onload = () => {
       displayItems('all', 'cardContainer', 'cards');
       displayItems('all', 'accountContainer', 'accounts');
       displayItems('all', 'malwareContainer', 'malware');
       displayItems('all', 'fullzContainer', 'fullz');
-      const username = localStorage.getItem('currentUser');
-      if (username) {
-        document.getElementById('user-info').textContent = `Logged in as ${username}`;
-      }
     };
   </script>
 </body>
